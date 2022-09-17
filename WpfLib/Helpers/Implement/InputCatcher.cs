@@ -10,75 +10,69 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace WpfLib
 {
     
 }
-namespace WpfLib.Helpers.Imp
+namespace WpfLib.Helpers.Implement
 {
     interface IInterface
     {
         //[Obsolete]
         //static abstract void Target润time不支持StatAbsMemberInInterfaces([CallerMemberName]string n);
     }
-    
-    public class InputCatcher : IInput
+    internal class InputCatcher : IInputCatcher
     {
-        private static readonly Dictionary<MouseButton, Input> ButtonMap = new ()
+        private static readonly Dictionary<MouseButton, Inputs> ButtonMap = new ()
         {
-            { MouseButton.Left ,   Input.LeftButton   },
-            { MouseButton.Right ,  Input.RightButton  },
-            { MouseButton.Middle , Input.MiddleButton },
+            { MouseButton.Left ,   Helpers.Inputs.LeftButton   },
+            { MouseButton.Right ,  Helpers.Inputs.RightButton  },
+            { MouseButton.Middle , Helpers.Inputs.MiddleButton },
         };
-        private static readonly Dictionary<Key, Input> KeyMap = new ()
+        private static readonly Dictionary<Key, Inputs> KeyMap = new ()
         {
-            { Key.A ,         Input.A         },
-            { Key.LeftCtrl ,  Input.LeftCtrl  },
-            { Key.RightCtrl , Input.RightCtrl },
-            { Key.Space ,     Input.Space     },
-            { Key.Enter ,     Input.Enter     },
-            { Key.CapsLock ,  Input.CapsLock  },
-            { Key.LeftAlt ,   Input.LeftAlt   },
-            { Key.ExSel ,     Input.ExSel     },
-            { Key.LeftShift , Input.LeftShift }
+            { Key.A ,         Helpers.Inputs.A         },
+            { Key.LeftCtrl ,  Helpers.Inputs.LeftCtrl  },
+            { Key.RightCtrl , Helpers.Inputs.RightCtrl },
+            { Key.Space ,     Helpers.Inputs.Space     },
+            { Key.Enter ,     Helpers.Inputs.Enter     },
+            { Key.CapsLock ,  Helpers.Inputs.CapsLock  },
+            { Key.LeftAlt ,   Helpers.Inputs.LeftAlt   },
+            { Key.ExSel ,     Helpers.Inputs.ExSel     },
+            { Key.LeftShift , Helpers.Inputs.LeftShift }
         };
 
-        private readonly Dictionary<Key, Input> _myKeyMap = new ();
-        private readonly Dictionary<MouseButton, Input> _myButtonMap = new ();
+        private readonly Dictionary<Key, Inputs> _myKeyMap = new ();
+        private readonly Dictionary<MouseButton, Inputs> _myButtonMap = new ();
 
         private IList<FrameworkElement> Targets { get; } = new List<FrameworkElement>();
         /// <summary>
         /// 当前输入
         /// </summary>
-        public Input Inputs { get; private set; }
+        public Inputs Inputs { get; private set; }
 
         /// <summary>
         /// 启用
         /// </summary>
         /// <returns></returns>
-        public InputCatcher Enable(FrameworkElement target)
+        private void Enable(FrameworkElement target)
         {
             target.MouseDown += MouseDown;
             target.MouseUp += MouseUp;
             target.KeyDown += KeyDown;
             target.KeyUp += KeyUp;
-            return this;
         }
-
         /// <summary>
         /// 禁用
         /// </summary>
         /// <returns></returns>
-        public InputCatcher Disable(FrameworkElement target)
+        private void Disable(FrameworkElement target)
         {
             target.MouseDown -= MouseDown;
             target.MouseUp -= MouseUp;
             target.KeyDown -= KeyDown;
             target.KeyUp -= KeyUp;
-            return this;
         }
 
         /// <summary>
@@ -86,7 +80,7 @@ namespace WpfLib.Helpers.Imp
         /// </summary>
         public void Reset()
         {
-            Inputs = Input.Nothing;
+            Inputs = Inputs.Nothing;
         }
 
         public InputCatcher()
@@ -96,7 +90,7 @@ namespace WpfLib.Helpers.Imp
 
         #region Private Fields
         private Task Thread { get; set; } = new Task(() => { });
-        private Input GetKey(Key key)
+        private Inputs GetKey(Key key)
         {
             if (KeyMap.TryGetValue(key, out var ret))
             {
@@ -106,9 +100,9 @@ namespace WpfLib.Helpers.Imp
             {
                 return ret;
             }
-            return Input.Nothing;
+            return Inputs.Nothing;
         }
-        private Input GetMouse(MouseButton button)
+        private Inputs GetMouse(MouseButton button)
         {
             if (ButtonMap.TryGetValue(button, out var ret))
             {
@@ -118,23 +112,23 @@ namespace WpfLib.Helpers.Imp
             {
                 return ret;
             }
-            return Input.Nothing;
+            return Inputs.Nothing;
         }
 
-        private bool AddFlag(Input input)
+        private bool AddFlag(Inputs inputs)
         {
-            if (!Inputs.Is(input))
+            if (!Inputs.Is(inputs))
             {
-                Inputs += (ulong)input;
+                Inputs += (ulong)inputs;
                 return true;
             }
             return false;
         }
-        private bool RemoveFlag(Input input)
+        private bool RemoveFlag(Inputs inputs)
         {
-            if (Inputs.Is(input))
+            if (Inputs.Is(inputs))
             {
-                Inputs -= (ulong)input;
+                Inputs -= (ulong)inputs;
                 return true;
             }
             return false;
@@ -173,7 +167,8 @@ namespace WpfLib.Helpers.Imp
             }
         }
 
-        private void Happen(Input all, Input change, bool active, EventArgs eventArgs)
+
+        private void Happen(Inputs all, Inputs change, bool active, EventArgs eventArgs)
         {
             Thread = Thread.ContinueWith((t) =>
             {
@@ -185,7 +180,7 @@ namespace WpfLib.Helpers.Imp
         /// <summary>
         /// 输入更变事件
         /// </summary>
-        public IInput.InputChangeEvent InputChange { get; set; }
+        public IInputCatcher.InputChangeEvent InputChange { get; set; }
 
         /// <summary>
         /// 主动添加字典
@@ -193,7 +188,7 @@ namespace WpfLib.Helpers.Imp
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public InputCatcher Optional(Key key, Input value)
+        public InputCatcher Optional(Key key, Inputs value)
         {
             _myKeyMap.Add(key, value);
             return this;
@@ -204,7 +199,7 @@ namespace WpfLib.Helpers.Imp
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public InputCatcher Optional(MouseButton key, Input value)
+        public InputCatcher Optional(MouseButton key, Inputs value)
         {
             _myButtonMap.Add(key, value);
             return this;
@@ -219,7 +214,7 @@ namespace WpfLib.Helpers.Imp
             _myButtonMap.Remove(button);
         }
 
-        public IInput Attach(FrameworkElement target)
+        public IInputCatcher Attach(FrameworkElement target)
         {
             if (!Targets.Contains(target))
             {
@@ -228,7 +223,7 @@ namespace WpfLib.Helpers.Imp
             }
             return this;
         }
-        public IInput Detach(FrameworkElement target)
+        public IInputCatcher Detach(FrameworkElement target)
         {
             if(Targets.Remove(target))
             {
