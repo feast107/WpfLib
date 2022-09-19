@@ -1,0 +1,71 @@
+﻿<Grid x:Class="WpfLib.Controls.Mask"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           xmlns:local="clr-namespace:WpfLib.Controls"
+           mc:Ignorable="d">
+        <DockPanel>
+            <Grid x:Name="LeftPanel"   DockPanel.Dock="Left"   Background="#80000000"
+                  Height="Auto" ></Grid>
+            <Grid x:Name="TopPanel"    DockPanel.Dock="Top"    Background="#80000000"
+                  Width="Auto" ></Grid>
+            <Grid x:Name="RightPanel"  DockPanel.Dock="Right"  Background="#80000000"
+                  Height="Auto" ></Grid>
+            <Grid x:Name="BottomPanel" DockPanel.Dock="Bottom" Background="#80000000"
+                  Width ="Auto" ></Grid>
+            <Grid x:Name="ClipRect"    Background="Transparent" Visibility="Hidden">
+                <Grid.Resources>
+                    <Style TargetType="Thumb">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Thumb">
+                                    <Border BorderBrush="Gray" BorderThickness="2" CornerRadius="8"  Background="White"></Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Grid.Resources>
+                <!--左-->
+                <Thumb  x:Name="LeftThumb" Margin="-8,0,0,0" Width="16" Height="16" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Center" Cursor="SizeWE"   
+                        DragDelta="Thumb_OnDragDelta"/>
+                <!--上-->
+                <Thumb  x:Name="TopThumb" Margin="0,-8,0,0" Width="16" Height="16" 
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Top" Cursor="SizeNS" 
+                        DragDelta="Thumb_OnDragDelta"/>
+                <!--右-->
+                <Thumb  x:Name="RightThumb" Margin="0,0,-8,0" Width="16" Height="16" 
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Center" Cursor="SizeWE" 
+                        DragDelta="Thumb_OnDragDelta"/>
+                <!--下-->
+                <Thumb  x:Name="BottomThumb" Margin="0,0,0,-8" Width="16" Height="16" 
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Bottom" Cursor="SizeNS" 
+                        DragDelta="Thumb_OnDragDelta"/>
+                <!--左上-->
+                <Thumb  x:Name="LeftTopThumb" Margin="-8,-8,0,0" Width="16" Height="16" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Top" Cursor="SizeNWSE" 
+                        DragDelta  ="Thumb_OnDragDelta"/>
+                <!--右上-->
+                <Thumb  x:Name="RightTopThumb" Margin="0,-8,-8,0" Width="16" Height="16" 
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Top"  Cursor="SizeNESW" 
+                        DragDelta  ="Thumb_OnDragDelta"/>
+                <!--右下-->
+                <Thumb  x:Name="RightBottomThumb" Margin="0,0,-8,-8" Width="16" Height="16" 
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Bottom"  Cursor="SizeNWSE"  
+                        DragDelta  ="Thumb_OnDragDelta"/>
+                <!--左下-->
+                <Thumb  x:Name="LeftBottomThumb" Margin="-8,0,0,-8" Width="16" Height="16" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Bottom" Cursor="SizeNESW" 
+                        DragDelta  ="Thumb_OnDragDelta"/>
+            </Grid>
+        </DockPanel>
+</Grid>

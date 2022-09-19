@@ -85,5 +85,6 @@ namespace WpfLib.Helpers
         /// 输入更变事件
         /// </summary>
         public InputChangeEvent InputChange { get; set; }
+
     }
 }
