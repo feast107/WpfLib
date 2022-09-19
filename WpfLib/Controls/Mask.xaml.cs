@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Security.Permissions;
 using System.Text;
 using System.Windows;
@@ -12,20 +13,22 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WpfLib.Controls.Definition;
 using VerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace WpfLib.Controls
 {
     /// <summary>
-    /// Mask.xaml 的交互逻辑
+    /// 用于空间区域截图的控件，双击完成截图
     /// </summary>
-    public partial class Mask
+    public partial class Mask : Grid ,ICompletable
     {
         #region Private Fields
         enum SourceType
         {
             Panel,
-            ContentControl
+            ContentControl,
+            Border
         }
         private readonly FrameworkElement _src;
         private readonly SourceType _sourceType;
@@ -37,6 +40,9 @@ namespace WpfLib.Controls
         public Point? StartPosition { get; private set; }
         public Point? EndPosition { get; private set; }
         
+        private new UIElementCollection Children => Container.Children;
+        
+
         public Mask(Panel container)
         {
             InitializeComponent();
@@ -50,6 +56,7 @@ namespace WpfLib.Controls
                 container.Children.RemoveAt(0);
                 Children.Add(child);
             }
+            container.Children.Add(this);
             Init(container);
         }
         public Mask(ContentControl container)
@@ -64,7 +71,20 @@ namespace WpfLib.Controls
             o.IsEnabled = false;
             Init(container);
         }
-        public void Finish()
+        public Mask(Border container)
+        {
+            InitializeComponent();
+            _src = container;
+            _sourceType = SourceType.Border;
+            var o = container.Child;
+            container.Child = this;
+            Children.Insert(0,o);
+            _elements.Add(o);
+            o.IsEnabled = false;
+            Init(container);
+        }
+
+        private void Recover()
         {
             Dispatcher.Invoke(() =>
             {
@@ -72,6 +92,7 @@ namespace WpfLib.Controls
                 {
                     case SourceType.Panel:
                         Children.Clear();
+                        ((Panel)_src).Children.Remove(this);
                         _elements.ForEach(x =>
                         {
                             ((Panel)_src).Children.Add(x);
@@ -81,6 +102,11 @@ namespace WpfLib.Controls
                     case SourceType.ContentControl:
                         Children.RemoveAt(0);
                         ((ContentControl)_src).Content = _elements[0];
+                        _elements[0].IsEnabled = true;
+                        break;
+                    case SourceType.Border:
+                        Children.RemoveAt(0);
+                        ((Border)_src).Child = _elements[0];
                         _elements[0].IsEnabled = true;
                         break;
                 }
@@ -100,6 +126,17 @@ namespace WpfLib.Controls
                 }
             }
         }
+
+        public bool Finish()
+        {
+            if (!Status.HasFlag(CompletableStatus.Completed))
+            {
+                Recover();
+                Status = CompletableStatus.Canceled;
+            }
+            return true;
+        }
+
         public Brush BackGroundColor { get; set; } = new SolidColorBrush(Color.FromArgb(100,100,100,100));
 
         public delegate void CutFinishEvent(Rect region);
@@ -115,6 +152,7 @@ namespace WpfLib.Controls
             TopPanel.Height = BottomPanel.Height = Height / 2;
             LeftPanel.Width = RightPanel.Width = Width / 2;
 
+
             TopPanel.Background =
                 LeftPanel.Background = 
                     RightPanel.Background = 
@@ -125,6 +163,7 @@ namespace WpfLib.Controls
             {
                 if (e.ChangedButton== MouseButton.Left)
                 {
+                    Status = CompletableStatus.Working;
                     if (StartPosition == null)
                     {
                         var sp = e.GetPosition(this);
@@ -138,7 +177,7 @@ namespace WpfLib.Controls
                                 TopPanel.Height = sp.Y;
                                 BottomPanel.Height = Height - sp.Y;
                                 LeftPanel.Width = sp.X;
-                                BottomPanel.Width = Width - sp.Y;
+                                RightPanel.Width = Width - sp.Y;
                             }
                             Down = true;
                         }
@@ -155,6 +194,9 @@ namespace WpfLib.Controls
                         if (ep.X >= 0 && ep.Y >= 0 && ep.Y <= Height && ep.X <= Width)
                         {
                             EndPosition = ep;
+                            Rect r = new Rect(StartPosition??new Point(), ep);
+                            StartPosition = r.TopLeft;
+                            EndPosition = r.BottomRight;
                             Down = false;
                             ClipRect.Visibility = Visibility.Visible;
                         }
@@ -220,11 +262,14 @@ namespace WpfLib.Controls
             {
                 if (e.ClickCount >= 2 && Region != Rect.Empty)
                 {
-                    Finish();
+                    Recover();
                     CutFinish?.Invoke(Region);
+                    Status = CompletableStatus.Successful;
                 }
             };
+            Status = CompletableStatus.Ready;
         }
+
 
         private void LeftMove(double offset)
         {
@@ -326,5 +371,7 @@ namespace WpfLib.Controls
         }
 
         #endregion
+
+        public CompletableStatus Status { get; private set; } = CompletableStatus.Created;
     }
 }

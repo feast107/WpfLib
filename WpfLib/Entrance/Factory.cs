@@ -17,7 +17,7 @@ namespace WpfLib.Entrance
         {
             get
             {
-                if (_instance == null) { lock (Lock) { if (_instance == null) { _instance = new Factory(); } } } return _instance;
+                if (_instance == null) { lock (Lock) {  _instance ??= new Factory();  } } return _instance;
             }
         }
         private static readonly object Lock = new();

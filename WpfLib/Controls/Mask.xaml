@@ -4,15 +4,15 @@
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            xmlns:local="clr-namespace:WpfLib.Controls"
-           mc:Ignorable="d">
-        <DockPanel>
-            <Grid x:Name="LeftPanel"   DockPanel.Dock="Left"   
+           mc:Ignorable="d" Margin="0">
+        <DockPanel ZIndex="9999999" Margin="0">
+            <Grid x:Name="LeftPanel"   DockPanel.Dock="Left"   Margin="0"
                   Height="Auto" ></Grid>
-            <Grid x:Name="TopPanel"    DockPanel.Dock="Top"    
+            <Grid x:Name="TopPanel"    DockPanel.Dock="Top"     Margin="0"
                   Width="Auto" ></Grid>
-            <Grid x:Name="RightPanel"  DockPanel.Dock="Right"  
+            <Grid x:Name="RightPanel"  DockPanel.Dock="Right"   Margin="0"
                   Height="Auto" ></Grid>
-            <Grid x:Name="BottomPanel" DockPanel.Dock="Bottom" 
+            <Grid x:Name="BottomPanel" DockPanel.Dock="Bottom"  Margin="0"
                   Width ="Auto" ></Grid>
             <Grid x:Name="ClipRect"    Background="Transparent" Visibility="Hidden">
                 <Grid.Resources>
@@ -68,4 +68,5 @@
                         DragDelta  ="Thumb_OnDragDelta"/>
             </Grid>
         </DockPanel>
+        <Grid x:Name="Container"></Grid>
 </Grid>
