@@ -6,13 +6,13 @@
            xmlns:local="clr-namespace:WpfLib.Controls"
            mc:Ignorable="d">
         <DockPanel>
-            <Grid x:Name="LeftPanel"   DockPanel.Dock="Left"   Background="#80000000"
+            <Grid x:Name="LeftPanel"   DockPanel.Dock="Left"   
                   Height="Auto" ></Grid>
-            <Grid x:Name="TopPanel"    DockPanel.Dock="Top"    Background="#80000000"
+            <Grid x:Name="TopPanel"    DockPanel.Dock="Top"    
                   Width="Auto" ></Grid>
-            <Grid x:Name="RightPanel"  DockPanel.Dock="Right"  Background="#80000000"
+            <Grid x:Name="RightPanel"  DockPanel.Dock="Right"  
                   Height="Auto" ></Grid>
-            <Grid x:Name="BottomPanel" DockPanel.Dock="Bottom" Background="#80000000"
+            <Grid x:Name="BottomPanel" DockPanel.Dock="Bottom" 
                   Width ="Auto" ></Grid>
             <Grid x:Name="ClipRect"    Background="Transparent" Visibility="Hidden">
                 <Grid.Resources>

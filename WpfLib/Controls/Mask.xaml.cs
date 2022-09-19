@@ -21,6 +21,7 @@ namespace WpfLib.Controls
     /// </summary>
     public partial class Mask
     {
+        #region Private Fields
         enum SourceType
         {
             Panel,
@@ -29,14 +30,13 @@ namespace WpfLib.Controls
         private readonly FrameworkElement _src;
         private readonly SourceType _sourceType;
         private readonly List<UIElement> _elements = new();
-
-        public Point? StartPosition { get; private set; }
-        public Point? EndPosition { get; private set; }
-
-        public Rect Region { get; private set; }
-
         private Point MoveLast { get; set; }
         private bool Drag { get; set; }
+        #endregion
+        
+        public Point? StartPosition { get; private set; }
+        public Point? EndPosition { get; private set; }
+        
         public Mask(Panel container)
         {
             InitializeComponent();
@@ -64,7 +64,49 @@ namespace WpfLib.Controls
             o.IsEnabled = false;
             Init(container);
         }
+        public void Finish()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                switch (_sourceType)
+                {
+                    case SourceType.Panel:
+                        Children.Clear();
+                        _elements.ForEach(x =>
+                        {
+                            ((Panel)_src).Children.Add(x);
+                            x.IsEnabled = true;
+                        });
+                        break;
+                    case SourceType.ContentControl:
+                        Children.RemoveAt(0);
+                        ((ContentControl)_src).Content = _elements[0];
+                        _elements[0].IsEnabled = true;
+                        break;
+                }
+            });
+        }
+        public Rect Region
+        {
+            get
+            {
+                if (StartPosition == null || EndPosition == null)
+                {
+                    return Rect.Empty;
+                }
+                else
+                {
+                    return new Rect(StartPosition??new Point(), EndPosition??new Point());
+                }
+            }
+        }
+        public Brush BackGroundColor { get; set; } = new SolidColorBrush(Color.FromArgb(100,100,100,100));
 
+        public delegate void CutFinishEvent(Rect region);
+
+        public CutFinishEvent CutFinish { get; set; }
+
+        #region Private Methods
         private bool Down { get; set; }
         private void Init(FrameworkElement container)
         {
@@ -73,26 +115,33 @@ namespace WpfLib.Controls
             TopPanel.Height = BottomPanel.Height = Height / 2;
             LeftPanel.Width = RightPanel.Width = Width / 2;
 
+            TopPanel.Background =
+                LeftPanel.Background = 
+                    RightPanel.Background = 
+                        BottomPanel.Background = 
+                            BackGroundColor;
+
             MouseDown += (o,e) =>
             {
                 if (e.ChangedButton== MouseButton.Left)
                 {
-                    Region = new Rect(e.GetPosition(this),new Size(0,0));
-                    var sp = e.GetPosition(this);
-                    if (StartPosition == null && 
-                        sp.Y >= 0 && 
-                        sp.X >= 0 && 
-                        sp.Y <= Height && 
-                        sp.X <= Width)
+                    if (StartPosition == null)
                     {
-                        StartPosition = sp;
+                        var sp = e.GetPosition(this);
+                        if (sp.Y >= 0 &&
+                            sp.X >= 0 &&
+                            sp.Y <= Height &&
+                            sp.X <= Width)
                         {
-                            TopPanel.Height = sp.Y;
-                            BottomPanel.Height = Height - sp.Y;
-                            LeftPanel.Width = sp.X;
-                            BottomPanel.Width = Width - sp.Y;
+                            StartPosition = sp;
+                            {
+                                TopPanel.Height = sp.Y;
+                                BottomPanel.Height = Height - sp.Y;
+                                LeftPanel.Width = sp.X;
+                                BottomPanel.Width = Width - sp.Y;
+                            }
+                            Down = true;
                         }
-                        Down = true;
                     }
                 }
             };
@@ -100,12 +149,15 @@ namespace WpfLib.Controls
             {
                 if (e.ChangedButton == MouseButton.Left)
                 {
-                    var ep = e.GetPosition(this);
-                    if (ep.X >= 0 && ep.Y >= 0 && ep.Y <= Height && ep.X <= Width)
+                    if (Down)
                     {
-                        EndPosition = ep;
-                        Down = false;
-                        ClipRect.Visibility = Visibility.Visible;
+                        var ep = e.GetPosition(this);
+                        if (ep.X >= 0 && ep.Y >= 0 && ep.Y <= Height && ep.X <= Width)
+                        {
+                            EndPosition = ep;
+                            Down = false;
+                            ClipRect.Visibility = Visibility.Visible;
+                        }
                     }
                 }
             };
@@ -163,29 +215,15 @@ namespace WpfLib.Controls
                     MoveLast = now;
                 }
             };
-        }
 
-        public void Finish()
-        {
-            Dispatcher.Invoke(() =>
+            MouseDown += (o, e) =>
             {
-                switch (_sourceType)
+                if (e.ClickCount >= 2 && Region != Rect.Empty)
                 {
-                    case SourceType.Panel:
-                        Children.Clear();
-                        _elements.ForEach(x =>
-                        {
-                            ((Panel)_src).Children.Add(x);
-                            x.IsEnabled = true;
-                        });
-                        break;
-                    case SourceType.ContentControl:
-                        Children.RemoveAt(0);
-                        ((ContentControl)_src).Content = _elements[0];
-                        _elements[0].IsEnabled = true;
-                        break;
+                    Finish();
+                    CutFinish?.Invoke(Region);
                 }
-            });
+            };
         }
 
         private void LeftMove(double offset)
@@ -262,7 +300,6 @@ namespace WpfLib.Controls
             }
         }
         
-        
         private void Thumb_OnDragDelta(object sender, DragDeltaEventArgs e)
         {
             var t = (Thumb)sender;
@@ -288,6 +325,6 @@ namespace WpfLib.Controls
             }
         }
 
-
+        #endregion
     }
 }

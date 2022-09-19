@@ -31,13 +31,13 @@ namespace WpfLib.Helpers
 
     public static class InputExtension
     {
-        public static bool Is(this Inputs inputses, Inputs flag)
+        public static bool Is(this Inputs inputs, Inputs flag)
         {
             if (flag == Inputs.Nothing)
             {
-                return inputses == Inputs.Nothing;
+                return inputs == Inputs.Nothing;
             }
-            return inputses.HasFlag(flag);
+            return inputs.HasFlag(flag);
         }
 
     }
