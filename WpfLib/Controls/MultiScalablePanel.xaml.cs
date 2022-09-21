@@ -1,21 +1,24 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfLib.Helpers;
+using Timer = System.Timers.Timer;
 
 namespace WpfLib.Controls
 {
     /// <summary>
-    /// MultiScalableView.xaml 的交互逻辑
+    /// 等间距等大小可缩放容器
     /// </summary>
-    public partial class MultiScalableView
+    public partial class MultiScalablePanel
     {
         /// <summary>
         /// 初始化尺寸
         /// </summary>
         /// <param name="initialSize"></param>
-        public MultiScalableView(Size initialSize)
+        public MultiScalablePanel(Size initialSize)
         {
             if (Size.IsEmpty)
             {
@@ -25,7 +28,6 @@ namespace WpfLib.Controls
             InitializeComponent();
             Init();
         }
-
         /// <summary>
         /// 内单元大小
         /// </summary>
@@ -53,10 +55,10 @@ namespace WpfLib.Controls
             }
         }
 
-        private readonly object _renderLock = new();
-
-        private UIElementCollection Children => SpacingPanel.Children;
-
+        /// <summary>
+        /// 控制伴随滚轮的缩放键，默认为LeftCtrl
+        /// </summary>
+        public Key ZoomKey { get; set; } = Key.LeftCtrl;
         public void Add(FrameworkElement control)
         {
             control.RenderSize = Size;
@@ -72,22 +74,29 @@ namespace WpfLib.Controls
                 }
             }
         }
-        public void Remove(FrameworkElement control)
+        public bool Remove(FrameworkElement control)
         {
-            lock (_renderLock)
-            {
-                int c = Children.Count;
-                Children.Remove(control);
+
+            if (Contains(control))
+            { 
                 control.MouseDown -= OnItemMouseDown;
-                if (c > Children.Count && Children.Count < RealColumnCount)
+                lock (_renderLock)
                 {
-                    Resize();
+                    Children.Remove(control);
+                    if (Children.Count < RealColumnCount) { Resize(); }
                 }
-            }
+                return true;
+            } 
+            return false;
+        }
+        public bool Contains(FrameworkElement control)
+        {
+            return Children.Contains(control);
         }
 
         #region Privates Fields
-
+        private readonly object _renderLock = new();
+        private UIElementCollection Children => SpacingPanel.Children;
         /// <summary>
         /// 由尺寸计算出的列数量
         /// </summary>
@@ -111,28 +120,38 @@ namespace WpfLib.Controls
         }
         private void Init()
         {
+            ScrollViewer.IsInertiaEnabled = true;
             SpacingPanel.Width = Size.Width;
+            KeyDown += (o, e) =>
+            {
+                Console.WriteLine(e);
+            };
             SpacingPanel.MouseWheel += (o, e) =>
             {
-                if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                if (Keyboard.IsKeyDown(ZoomKey))
                 {
+                    ScrollViewer.CanMouseWheel = false;
+                    var p = e.GetPosition(SpacingPanel);
                     if (e.Delta > 0)
                     {
                         if ( (Size.Width + Spacing * 2) * Scale < ActualWidth)
                         {
                             Size = new Size(Size.Width * Scale, Size.Height * Scale);
                             Resize();
+                            SilentScroll(p.Y * Scale - e.GetPosition(ScrollViewer).Y);
                         }
                     }
                     else
                     {
                         Size = new Size(Size.Width / Scale, Size.Height / Scale);
                         Resize();
+                        SilentScroll(p.Y / Scale - e.GetPosition(ScrollViewer).Y);
                     }
+                    ScrollViewer.CanMouseWheel = true;
                 }
             };
-
         }
+       
         private bool _showed;
         private void Resize()
         {
@@ -184,9 +203,29 @@ namespace WpfLib.Controls
                 }
                 Resize();
                 double offSet = index * (Size.Height + Spacing);
-                ScrollViewer.ScrollToVerticalOffset(offSet);
+                SilentScroll(offSet);
             }
         }
+        private void SilentScroll(double offset)
+        {
+            if (AutoInertiaEnabler != null)
+            {
+                AutoInertiaEnabler.Stop();
+            }
+            ScrollViewer.IsInertiaEnabled = false;
+            ScrollViewer.ScrollToVerticalOffset(offset);
+            AutoInertiaEnabler = new Timer() { Interval = 300,AutoReset = false};
+            AutoInertiaEnabler.Elapsed += (o, e) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    ScrollViewer.IsInertiaEnabled = true;
+                });
+            };
+            AutoInertiaEnabler.Start();
+        }
+
+        private Timer AutoInertiaEnabler { get; set; }
         #endregion
     }
 }

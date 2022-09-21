@@ -64,7 +64,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\MultiScalableView.xaml">
+    <Page Include="Controls\MultiScalablePanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -78,8 +78,8 @@
     <Compile Include="Controls\Mask.xaml.cs">
       <DependentUpon>Mask.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\MultiScalableView.xaml.cs">
-      <DependentUpon>MultiScalableView.xaml</DependentUpon>
+    <Compile Include="Controls\MultiScalablePanel.xaml.cs">
+      <DependentUpon>MultiScalablePanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Entrance\Factory.cs" />
     <Compile Include="Helpers\IInputCatcher.cs" />

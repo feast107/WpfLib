@@ -10,7 +10,7 @@ using VerticalAlignment = System.Windows.VerticalAlignment;
 namespace WpfLib.Controls
 {
     /// <summary>
-    /// 用于控件区域截取的控件，双击完成截图
+    /// 用于控件区域截取的控件,左键拖拽，右键取消，双击完成截图
     /// </summary>
     public partial class Mask : ICompletable
     {
@@ -125,43 +125,11 @@ namespace WpfLib.Controls
                 {
                     if (Down)
                     {
-                        var ep = e.GetPosition(this);
-                        ep.X = ep.X > Width ? Width : ep.X < 0 ? 0 : ep.X;
-                        ep.Y = ep.Y > Height ? Height : ep.Y < 0 ? 0 : ep.Y;
-                        EndPosition = ep;
-                        Rect r = new Rect(StartPosition ?? new Point(), ep);
-                        StartPosition = r.TopLeft;
-                        EndPosition = r.BottomRight;
-                        Down = false;
-                        ClipRect.Visibility = Visibility.Visible;
+                        SetEnd(e.GetPosition(this));
                     }
                 }
             }
-            MouseDown += (o,e) =>
-            {
-                if (e.ChangedButton== MouseButton.Left)
-                {
-                    ChangeStatus(CompletableStatus.Working);
-                    if (StartPosition == null)
-                    {
-                        var sp = e.GetPosition(this);
-                        if (sp.Y >= 0 &&
-                            sp.X >= 0 &&
-                            sp.Y <= Height &&
-                            sp.X <= Width)
-                        {
-                            StartPosition = sp;
-                            {
-                                TopPanel.Height = sp.Y;
-                                BottomPanel.Height = Height - sp.Y;
-                                LeftPanel.Width = sp.X;
-                                RightPanel.Width = Width - sp.X;
-                            }
-                            Down = true;
-                        }
-                    }
-                }
-            };
+
             MouseUp += Mouseup;
             MouseMove += (o, e) =>
             {
@@ -181,12 +149,41 @@ namespace WpfLib.Controls
                         }
                     }
                 }
+                else
+                {
+                    if (e.LeftButton == MouseButtonState.Pressed)
+                    {
+                        if (StartPosition == null)
+                        {
+                            ChangeStatus(CompletableStatus.Working);
+                            SetStart(e.GetPosition(this));
+                        }
+                    }
+                }
             };
             MouseLeave += (o, e) =>
             {
                 if (Down)
                 {
                     Mouseup(o, new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left));
+                }
+            };
+            MouseDoubleClick += (o, e) =>
+            {
+                if (e.ChangedButton == MouseButton.Left)
+                {
+                    if (Region != Rect.Empty)
+                    {
+                        Recover();
+                        CutFinish?.Invoke(Region);
+                        ChangeStatus(CompletableStatus.Successful);
+                    }
+                    if (Status != CompletableStatus.Working)
+                    {
+                        ChangeStatus(CompletableStatus.Working);
+                        SetStart(new Point(0,0));
+                        SetEnd(new Point(Width,Height));
+                    }
                 }
             };
 
@@ -210,14 +207,14 @@ namespace WpfLib.Controls
                     var now = e.GetPosition(this);
                     double horizonOffset = now.X - MoveLast.X;
                     double verticalOffset = now.Y - MoveLast.Y;
-                    if (StartPosition?.X + horizonOffset >= 0 && 
-                        EndPosition?.X + horizonOffset <= ActualWidth)
+                    if (LeftPanel.Width + horizonOffset >= 0 && 
+                        RightPanel.Width - horizonOffset >=0)
                     {
                         LeftMove(horizonOffset);
                         RightMove(horizonOffset);
                     }
-                    if (StartPosition?.Y + verticalOffset >= 0 && 
-                        EndPosition?.Y + verticalOffset <= ActualHeight)
+                    if (TopPanel.Height + verticalOffset >= 0 && 
+                        BottomPanel.Height - verticalOffset >= 0)
                     {
                         TopMove(verticalOffset);
                         BottomMove(verticalOffset);
@@ -230,16 +227,42 @@ namespace WpfLib.Controls
                 DragUp(o, new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left));
             };
             
-            MouseDown += (o, e) =>
-            {
-                if (e.ClickCount >= 2 && Region != Rect.Empty)
-                {
-                    Recover();
-                    CutFinish?.Invoke(Region);
-                    ChangeStatus(CompletableStatus.Successful);
-                }
-            };
             ChangeStatus(CompletableStatus.Ready);
+        }
+
+        private void SetStart(Point sp)
+        {
+            if (sp.Y >= 0 &&
+                sp.X >= 0 &&
+                sp.Y <= Height &&
+                sp.X <= Width)
+            {
+                StartPosition = sp;
+                {
+                    TopPanel.Height = sp.Y;
+                    BottomPanel.Height = Height - sp.Y;
+                    LeftPanel.Width = sp.X;
+                    RightPanel.Width = Width - sp.X;
+                }
+                Down = true;
+            }
+        }
+        private void SetEnd(Point ep)
+        {
+            ep.X = ep.X > Width ? Width : ep.X < 0 ? 0 : ep.X;
+            ep.Y = ep.Y > Height ? Height : ep.Y < 0 ? 0 : ep.Y;
+            EndPosition = ep;
+            Rect r = new Rect(StartPosition ?? new Point(), ep);
+            var sp = StartPosition = r.TopLeft;
+            EndPosition = r.BottomRight;
+
+            TopPanel.Height = (double)sp?.Y;
+            BottomPanel.Height = Height - ep.Y;
+            LeftPanel.Width = (double)sp?.X;
+            RightPanel.Width = Width - ep.X;
+
+            Down = false;
+            ClipRect.Visibility = Visibility.Visible;
         }
         private void Recover()
         {
