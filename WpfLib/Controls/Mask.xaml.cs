@@ -147,7 +147,7 @@ namespace WpfLib.Controls
                                 TopPanel.Height = sp.Y;
                                 BottomPanel.Height = Height - sp.Y;
                                 LeftPanel.Width = sp.X;
-                                RightPanel.Width = Width - sp.Y;
+                                RightPanel.Width = Width - sp.X;
                             }
                             Down = true;
                         }
