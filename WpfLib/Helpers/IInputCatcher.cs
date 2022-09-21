@@ -11,7 +11,6 @@ namespace WpfLib.Helpers
         LeftButton   = 0x1,
         RightButton  = 0x2,
         MiddleButton = 0x4,
-        MouseMoving  = 0x8,
 
         LeftCtrl     = 0x10,
         LeftAlt      = 0x20,

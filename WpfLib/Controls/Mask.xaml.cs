@@ -5,7 +5,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfLib.Controls.Definition;
-using VerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace WpfLib.Controls
 {
@@ -229,7 +228,6 @@ namespace WpfLib.Controls
             
             ChangeStatus(CompletableStatus.Ready);
         }
-
         private void SetStart(Point sp)
         {
             if (sp.Y >= 0 &&

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WpfLib.Helpers;
-using Timer = System.Timers.Timer;
+using System.Timers;
 
 namespace WpfLib.Controls
 {
