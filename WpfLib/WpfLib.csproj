@@ -82,6 +82,7 @@
       <DependentUpon>MultiScalablePanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Entrance\Factory.cs" />
+    <Compile Include="Helpers\CursorHelper.cs" />
     <Compile Include="Helpers\IInputCatcher.cs" />
     <Compile Include="Helpers\Implement\InputCatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
