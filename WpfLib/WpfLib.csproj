@@ -39,6 +39,9 @@
     <Reference Include="Castle.Windsor, Version=3.4.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\VisualStudio\Project\AP\packages\Castle.Windsor.3.4.0\lib\net40\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="HandyControl, Version=3.3.0.0, Culture=neutral, PublicKeyToken=45be8712787a1e5b, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\VisualStudio\Project\AP\packages\HandyControl.3.3.0\lib\net40\HandyControl.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime">
@@ -61,6 +64,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\MultiScalableView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -70,6 +77,9 @@
     <Compile Include="Controls\Definition\ICompletable.cs" />
     <Compile Include="Controls\Mask.xaml.cs">
       <DependentUpon>Mask.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MultiScalableView.xaml.cs">
+      <DependentUpon>MultiScalableView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Entrance\Factory.cs" />
     <Compile Include="Helpers\IInputCatcher.cs" />

@@ -25,11 +25,12 @@ namespace WpfLib.Controls.Definition
     public interface ICompletable
     {
         CompletableStatus Status { get; }
-
         /// <summary>
         /// 强制中断
         /// </summary>
         /// <returns></returns>
         bool Finish();
+        delegate void StatusChangeEvent(CompletableStatus status);
+        StatusChangeEvent StatusChange { get; set; }
     }
 }

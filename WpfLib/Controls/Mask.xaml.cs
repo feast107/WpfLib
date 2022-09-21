@@ -42,7 +42,6 @@ namespace WpfLib.Controls
         
         private new UIElementCollection Children => Container.Children;
         
-
         public Mask(Panel container)
         {
             InitializeComponent();
@@ -84,6 +83,174 @@ namespace WpfLib.Controls
             Init(container);
         }
 
+     
+        public Rect Region
+        {
+            get
+            {
+                if (StartPosition == null || EndPosition == null)
+                {
+                    return Rect.Empty;
+                }
+                else
+                {
+                    return new Rect(StartPosition??new Point(), EndPosition??new Point());
+                }
+            }
+        }
+
+        public bool Finish()
+        {
+            if (!Status.Is(CompletableStatus.Completed))
+            {
+                Recover();
+                ChangeStatus(CompletableStatus.Canceled);
+            }
+            return true;
+        }
+
+        public Brush BackGroundColor { get; set; } = new SolidColorBrush(Color.FromArgb(100,100,100,100));
+
+        public delegate void CutFinishEvent(Rect region);
+
+        public CutFinishEvent CutFinish { get; set; }
+
+        #region Private Methods
+        private bool Down { get; set; }
+        private void Init(FrameworkElement container)
+        {
+            Height = container.ActualHeight;
+            Width = container.ActualWidth;
+            TopPanel.Height = BottomPanel.Height = Height / 2;
+            LeftPanel.Width = RightPanel.Width = Width / 2;
+
+            TopPanel.Background =
+                LeftPanel.Background = 
+                    RightPanel.Background = 
+                        BottomPanel.Background = BackGroundColor;
+
+            MouseDown += (o,e) =>
+            {
+                if (e.ChangedButton== MouseButton.Left)
+                {
+                    ChangeStatus(CompletableStatus.Working);
+                    if (StartPosition == null)
+                    {
+                        var sp = e.GetPosition(this);
+                        if (sp.Y >= 0 &&
+                            sp.X >= 0 &&
+                            sp.Y <= Height &&
+                            sp.X <= Width)
+                        {
+                            StartPosition = sp;
+                            {
+                                TopPanel.Height = sp.Y;
+                                BottomPanel.Height = Height - sp.Y;
+                                LeftPanel.Width = sp.X;
+                                RightPanel.Width = Width - sp.Y;
+                            }
+                            Down = true;
+                        }
+                    }
+                }
+            };
+            void Mouseup(object o, MouseButtonEventArgs e)
+            {
+                if (e.ChangedButton == MouseButton.Left)
+                {
+                    if (Down)
+                    {
+                        var ep = e.GetPosition(this);
+                        ep.X = ep.X > Width ? Width : ep.X < 0 ? 0 : ep.X;
+                        ep.Y = ep.Y > Height ? Height : ep.Y < 0 ? 0 : ep.Y;
+                        EndPosition = ep;
+                        Rect r = new Rect(StartPosition ?? new Point(), ep);
+                        StartPosition = r.TopLeft;
+                        EndPosition = r.BottomRight;
+                        Down = false;
+                        ClipRect.Visibility = Visibility.Visible;
+                    }
+                }
+            }
+            MouseUp += Mouseup;
+            MouseMove += (o, e) =>
+            {
+                if (Down)
+                {
+                    var ep = e.GetPosition(this);
+                    if(ep.X>=0 &&ep.Y >=0 && ep.Y<=Height && ep.X<=Width)
+                    {
+                        EndPosition = ep;
+                        var sp = StartPosition;
+                        if (sp != null)
+                        {
+                            TopPanel.Height = (double)sp?.Y > ep.Y ? ep.Y : (double)sp?.Y;
+                            BottomPanel.Height = Height - ((double)sp?.Y > ep.Y ? (double)sp?.Y : ep.Y);
+                            LeftPanel.Width = (double)sp?.X > ep.X ? ep.X : (double)sp?.X;
+                            RightPanel.Width = Width - ((double)sp?.X > ep.X ? (double)sp?.X : ep.X);
+                        }
+                    }
+                }
+            };
+            MouseLeave += (o, e) =>
+            {
+                if (Down)
+                {
+                    Mouseup(o, new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left));
+                }
+            };
+
+            void DragUp(object o, MouseButtonEventArgs e)
+            {
+                Drag = false;
+                e.MouseDevice.SetCursor(Cursors.Arrow);
+                MoveLast = new Point();
+            }
+            ClipRect.MouseDown += (o, e) =>
+            {
+                e.MouseDevice.SetCursor(Cursors.Hand);
+                MoveLast = e.GetPosition(this);
+                Drag = true;
+            };
+            ClipRect.MouseUp += DragUp;
+            ClipRect.MouseMove += (o, e) =>
+            {
+                if (Drag)
+                {
+                    var now = e.GetPosition(this);
+                    double horizonOffset = now.X - MoveLast.X;
+                    double verticalOffset = now.Y - MoveLast.Y;
+                    if (StartPosition?.X + horizonOffset >= 0 && 
+                        EndPosition?.X + horizonOffset <= ActualWidth)
+                    {
+                        LeftMove(horizonOffset);
+                        RightMove(horizonOffset);
+                    }
+                    if (StartPosition?.Y + verticalOffset >= 0 && 
+                        EndPosition?.Y + verticalOffset <= ActualHeight)
+                    {
+                        TopMove(verticalOffset);
+                        BottomMove(verticalOffset);
+                    }
+                    MoveLast = now;
+                }
+            };
+            ClipRect.MouseLeave += (o, e) =>
+            {
+                DragUp(o, new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left));
+            };
+            
+            MouseDown += (o, e) =>
+            {
+                if (e.ClickCount >= 2 && Region != Rect.Empty)
+                {
+                    Recover();
+                    CutFinish?.Invoke(Region);
+                    ChangeStatus(CompletableStatus.Successful);
+                }
+            };
+            ChangeStatus(CompletableStatus.Ready);
+        }
         private void Recover()
         {
             Dispatcher.Invoke(() =>
@@ -112,170 +279,11 @@ namespace WpfLib.Controls
                 }
             });
         }
-        public Rect Region
-        {
-            get
-            {
-                if (StartPosition == null || EndPosition == null)
-                {
-                    return Rect.Empty;
-                }
-                else
-                {
-                    return new Rect(StartPosition??new Point(), EndPosition??new Point());
-                }
-            }
-        }
-
-        public bool Finish()
-        {
-            if (!Status.HasFlag(CompletableStatus.Completed))
-            {
-                Recover();
-                Status = CompletableStatus.Canceled;
-            }
-            return true;
-        }
-
-        public Brush BackGroundColor { get; set; } = new SolidColorBrush(Color.FromArgb(100,100,100,100));
-
-        public delegate void CutFinishEvent(Rect region);
-
-        public CutFinishEvent CutFinish { get; set; }
-
-        #region Private Methods
-        private bool Down { get; set; }
-        private void Init(FrameworkElement container)
-        {
-            Height = container.ActualHeight;
-            Width = container.ActualWidth;
-            TopPanel.Height = BottomPanel.Height = Height / 2;
-            LeftPanel.Width = RightPanel.Width = Width / 2;
-
-
-            TopPanel.Background =
-                LeftPanel.Background = 
-                    RightPanel.Background = 
-                        BottomPanel.Background = 
-                            BackGroundColor;
-
-            MouseDown += (o,e) =>
-            {
-                if (e.ChangedButton== MouseButton.Left)
-                {
-                    Status = CompletableStatus.Working;
-                    if (StartPosition == null)
-                    {
-                        var sp = e.GetPosition(this);
-                        if (sp.Y >= 0 &&
-                            sp.X >= 0 &&
-                            sp.Y <= Height &&
-                            sp.X <= Width)
-                        {
-                            StartPosition = sp;
-                            {
-                                TopPanel.Height = sp.Y;
-                                BottomPanel.Height = Height - sp.Y;
-                                LeftPanel.Width = sp.X;
-                                RightPanel.Width = Width - sp.Y;
-                            }
-                            Down = true;
-                        }
-                    }
-                }
-            };
-            MouseUp += (o, e) =>
-            {
-                if (e.ChangedButton == MouseButton.Left)
-                {
-                    if (Down)
-                    {
-                        var ep = e.GetPosition(this);
-                        if (ep.X >= 0 && ep.Y >= 0 && ep.Y <= Height && ep.X <= Width)
-                        {
-                            EndPosition = ep;
-                            Rect r = new Rect(StartPosition??new Point(), ep);
-                            StartPosition = r.TopLeft;
-                            EndPosition = r.BottomRight;
-                            Down = false;
-                            ClipRect.Visibility = Visibility.Visible;
-                        }
-                    }
-                }
-            };
-            MouseMove += (o, e) =>
-            {
-                if (Down)
-                {
-                    var ep = e.GetPosition(this);
-                    if(ep.X>=0 &&ep.Y >=0 && ep.Y<=Height && ep.X<=Width)
-                    {
-                        EndPosition = ep;
-                        var sp = StartPosition;
-                        if (sp != null)
-                        {
-                            TopPanel.Height = (double)sp?.Y > ep.Y ? ep.Y : (double)sp?.Y;
-                            BottomPanel.Height = Height - ((double)sp?.Y > ep.Y ? (double)sp?.Y : ep.Y);
-                            LeftPanel.Width = (double)sp?.X > ep.X ? ep.X : (double)sp?.X;
-                            RightPanel.Width = Width - ((double)sp?.X > ep.X ? (double)sp?.X : ep.X);
-                        }
-                    }
-                }
-            };
-
-            ClipRect.MouseDown += (o, e) =>
-            {
-                e.MouseDevice.SetCursor(Cursors.Hand);
-                MoveLast = e.GetPosition(this);
-                Drag = true;
-            };
-            ClipRect.MouseUp += (o, e) =>
-            {
-                Drag = false;
-                e.MouseDevice.SetCursor(Cursors.Arrow);
-                MoveLast = new Point();
-            };
-            ClipRect.MouseMove += (o, e) =>
-            {
-                if (Drag)
-                {
-                    var now = e.GetPosition(this);
-                    double horizonOffset = now.X - MoveLast.X;
-                    double verticalOffset = now.Y - MoveLast.Y;
-                    if (StartPosition?.X + horizonOffset > 0 && 
-                        EndPosition?.X + horizonOffset < ActualWidth)
-                    {
-                        LeftMove(horizonOffset);
-                        RightMove(horizonOffset);
-                    }
-                    if (StartPosition?.Y + verticalOffset > 0 && 
-                        EndPosition?.Y + verticalOffset < ActualHeight)
-                    {
-                        TopMove(verticalOffset);
-                        BottomMove(verticalOffset);
-                    }
-                    MoveLast = now;
-                }
-            };
-
-            MouseDown += (o, e) =>
-            {
-                if (e.ClickCount >= 2 && Region != Rect.Empty)
-                {
-                    Recover();
-                    CutFinish?.Invoke(Region);
-                    Status = CompletableStatus.Successful;
-                }
-            };
-            Status = CompletableStatus.Ready;
-        }
-
-
         private void LeftMove(double offset)
         {
             var sp = StartPosition ?? new Point();
             var ep = EndPosition ?? new Point();
-            if (sp.X + offset > 0)
+            if (sp.X + offset >= 0)
             {
                 if (sp.X + offset < ep.X)
                 {
@@ -293,7 +301,7 @@ namespace WpfLib.Controls
         {
             var sp = StartPosition ?? new Point();
             var ep = EndPosition ?? new Point();
-            if (ep.X + offset < ActualWidth)
+            if (ep.X + offset <= ActualWidth)
             {
                 if (ep.X + offset > sp.X)
                 {
@@ -311,7 +319,7 @@ namespace WpfLib.Controls
         {
             var sp = StartPosition ?? new Point();
             var ep = EndPosition ?? new Point();
-            if (sp.Y + offset > 0)
+            if (sp.Y + offset >= 0)
             {
                 if (sp.Y + offset < ep.Y)
                 {
@@ -329,7 +337,7 @@ namespace WpfLib.Controls
         {
             var sp = StartPosition ?? new Point();
             var ep = EndPosition ?? new Point();
-            if (ep.Y + offset < ActualHeight)
+            if (ep.Y + offset <= ActualHeight)
             {
                 if (ep.Y + offset > sp.Y)
                 {
@@ -370,8 +378,16 @@ namespace WpfLib.Controls
             }
         }
 
+        private void ChangeStatus(CompletableStatus status)
+        {
+            Status = status;
+            StatusChange?.Invoke(Status);
+        }
+
         #endregion
 
         public CompletableStatus Status { get; private set; } = CompletableStatus.Created;
+        public ICompletable.StatusChangeEvent StatusChange { get; set; }
+
     }
 }

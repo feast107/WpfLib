@@ -172,7 +172,7 @@ namespace WpfLib.Helpers.Implement
         {
             Thread = Thread.ContinueWith((t) =>
             {
-                InputChange(all, change, active, eventArgs);
+                InputChange?.Invoke(all, change, active, eventArgs);
             },TaskContinuationOptions.ExecuteSynchronously);
         }
         #endregion
