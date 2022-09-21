@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Security.Permissions;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using WpfLib.Controls.Definition;
 using VerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace WpfLib.Controls
 {
     /// <summary>
-    /// 用于空间区域截图的控件，双击完成截图
+    /// 用于控件区域截取的控件，双击完成截图
     /// </summary>
-    public partial class Mask : Grid ,ICompletable
+    public partial class Mask : ICompletable
     {
         #region Private Fields
         enum SourceType
@@ -33,14 +24,14 @@ namespace WpfLib.Controls
         private readonly FrameworkElement _src;
         private readonly SourceType _sourceType;
         private readonly List<UIElement> _elements = new();
-        private Point MoveLast { get; set; }
-        private bool Drag { get; set; }
+        private Point MoveLast { get; set; } 
+        private bool Down { get; set; }
+        private bool Drag { get; set; } 
+        private UIElementCollection Children => Container.Children;
         #endregion
         
         public Point? StartPosition { get; private set; }
         public Point? EndPosition { get; private set; }
-        
-        private new UIElementCollection Children => Container.Children;
         
         public Mask(Panel container)
         {
@@ -109,14 +100,13 @@ namespace WpfLib.Controls
             return true;
         }
 
-        public Brush BackGroundColor { get; set; } = new SolidColorBrush(Color.FromArgb(100,100,100,100));
+        public Brush MaskColor { get; set; } = new SolidColorBrush(Color.FromArgb(100,100,100,100));
 
         public delegate void CutFinishEvent(Rect region);
-
         public CutFinishEvent CutFinish { get; set; }
 
         #region Private Methods
-        private bool Down { get; set; }
+     
         private void Init(FrameworkElement container)
         {
             Height = container.ActualHeight;
@@ -127,8 +117,26 @@ namespace WpfLib.Controls
             TopPanel.Background =
                 LeftPanel.Background = 
                     RightPanel.Background = 
-                        BottomPanel.Background = BackGroundColor;
+                        BottomPanel.Background = MaskColor;
 
+            void Mouseup(object o, MouseButtonEventArgs e)
+            {
+                if (e.ChangedButton == MouseButton.Left)
+                {
+                    if (Down)
+                    {
+                        var ep = e.GetPosition(this);
+                        ep.X = ep.X > Width ? Width : ep.X < 0 ? 0 : ep.X;
+                        ep.Y = ep.Y > Height ? Height : ep.Y < 0 ? 0 : ep.Y;
+                        EndPosition = ep;
+                        Rect r = new Rect(StartPosition ?? new Point(), ep);
+                        StartPosition = r.TopLeft;
+                        EndPosition = r.BottomRight;
+                        Down = false;
+                        ClipRect.Visibility = Visibility.Visible;
+                    }
+                }
+            }
             MouseDown += (o,e) =>
             {
                 if (e.ChangedButton== MouseButton.Left)
@@ -154,24 +162,6 @@ namespace WpfLib.Controls
                     }
                 }
             };
-            void Mouseup(object o, MouseButtonEventArgs e)
-            {
-                if (e.ChangedButton == MouseButton.Left)
-                {
-                    if (Down)
-                    {
-                        var ep = e.GetPosition(this);
-                        ep.X = ep.X > Width ? Width : ep.X < 0 ? 0 : ep.X;
-                        ep.Y = ep.Y > Height ? Height : ep.Y < 0 ? 0 : ep.Y;
-                        EndPosition = ep;
-                        Rect r = new Rect(StartPosition ?? new Point(), ep);
-                        StartPosition = r.TopLeft;
-                        EndPosition = r.BottomRight;
-                        Down = false;
-                        ClipRect.Visibility = Visibility.Visible;
-                    }
-                }
-            }
             MouseUp += Mouseup;
             MouseMove += (o, e) =>
             {

@@ -1,26 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Castle.MicroKernel.Registration;
-using HandyControl.Controls;
-using UserControl = System.Windows.Controls.UserControl;
 
 namespace WpfLib.Controls
 {
     /// <summary>
     /// MultiScalableView.xaml 的交互逻辑
     /// </summary>
-    public partial class MultiScalableView : UserControl
+    public partial class MultiScalableView
     {
         public MultiScalableView(Size initialSize)
         {
@@ -80,6 +67,7 @@ namespace WpfLib.Controls
         private void Resize()
         {
             int count = (int)(ActualWidth / Size.Width);
+            if(count > Children.Count) count = Children.Count;
             SpacingPanel.Width = Size.Width * count + (count-1) * SpacingPanel.Spacing;
             foreach (FrameworkElement child in Children)
             {
