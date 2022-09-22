@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="WpfLib.Controls.ErasePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfLib.Controls"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Geometry x:Key="Rect">
+             M832 928 192 928c-52.928 0-96-43.072-96-96L96 192c0-52.928 43.072-96 96-96l640 0c52.928 0 96 43.072 96 96l0 640C928 884.928 884.928 928 832 928zM192 160C174.368 160 160 174.368 160 192l0 640c0 17.664 14.368 32 32 32l640 0c17.664 0 32-14.336 32-32L864 192c0-17.632-14.336-32-32-32L192 160z
+        </Geometry>
+    </UserControl.Resources>
+    <Grid >
+        <Grid x:Name="Controls">
+
+        </Grid>
+        <hc:ElementGroup Orientation="Horizontal" Margin="0,0,10,10"
+                         HorizontalAlignment="Right" Height="Auto" 
+                         VerticalAlignment="Bottom">
+            <Button x:Name="VerySmall" HorizontalAlignment="Stretch" Width="50" Height="40"
+                    hc:IconElement.Height="8"
+                    hc:IconElement.Geometry="{StaticResource Rect}"/>
+            <Button x:Name="Small" HorizontalAlignment="Stretch" Width="50"  Height="40"
+                    hc:IconElement.Height="12"
+                    hc:IconElement.Geometry="{StaticResource Rect}"/>
+            <Button x:Name="Medium" HorizontalAlignment="Stretch" Width="50" Height="40"
+                    hc:IconElement.Height="16"
+                    hc:IconElement.Geometry="{StaticResource Rect}"/>
+            <Button x:Name="Large" HorizontalAlignment="Stretch" Width="50"  Height="40"
+                    hc:IconElement.Height="20"
+                    hc:IconElement.Geometry="{StaticResource Rect}"/>
+        </hc:ElementGroup>
+    </Grid>
+</UserControl>
