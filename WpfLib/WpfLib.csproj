@@ -60,6 +60,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\ErasePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Mask.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -75,6 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\Definition\ICompletable.cs" />
+    <Compile Include="Controls\ErasePanel.xaml.cs">
+      <DependentUpon>ErasePanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Mask.xaml.cs">
       <DependentUpon>Mask.xaml</DependentUpon>
     </Compile>
@@ -84,6 +91,7 @@
     <Compile Include="Entrance\Factory.cs" />
     <Compile Include="Helpers\CursorHelper.cs" />
     <Compile Include="Helpers\IInputCatcher.cs" />
+    <Compile Include="Helpers\InterLayer.cs" />
     <Compile Include="Helpers\Implement\InputCatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

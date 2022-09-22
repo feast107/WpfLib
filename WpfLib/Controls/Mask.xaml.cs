@@ -5,6 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfLib.Controls.Definition;
+using WpfLib.Helpers;
 
 namespace WpfLib.Controls
 {
@@ -14,19 +15,10 @@ namespace WpfLib.Controls
     public partial class Mask : ICompletable
     {
         #region Private Fields
-        enum SourceType
-        {
-            Panel,
-            ContentControl,
-            Border
-        }
-        private readonly FrameworkElement _src;
-        private readonly SourceType _sourceType;
-        private readonly List<UIElement> _elements = new();
+        private IInterLayer Layer { get; }
         private Point MoveLast { get; set; } 
         private bool Down { get; set; }
         private bool Drag { get; set; } 
-        private UIElementCollection Children => Container.Children;
         #endregion
         
         public Point? StartPosition { get; private set; }
@@ -35,41 +27,31 @@ namespace WpfLib.Controls
         public Mask(Panel container)
         {
             InitializeComponent();
-            _src = container;
-            _sourceType = SourceType.Panel;
-            while (container.Children.Count > 0)
+            Layer = new InterLayer(container, Container,this)
             {
-                var child = container.Children[0];
-                _elements.Add(child);
-                child.IsEnabled = false;
-                container.Children.RemoveAt(0);
-                Children.Add(child);
-            }
-            container.Children.Add(this);
+                EnableChildren = false
+            };
+            Layer.Mount();
             Init(container);
         }
         public Mask(ContentControl container)
         {
             InitializeComponent();
-            _src = container;
-            _sourceType = SourceType.ContentControl;
-            var o = (UIElement)container.Content;
-            container.Content = this;
-            Children.Insert(0,o);
-            _elements.Add(o);
-            o.IsEnabled = false;
+            Layer = new InterLayer(container, Container,this)
+            {
+                EnableChildren = false
+            };
+            Layer.Mount();
             Init(container);
         }
         public Mask(Border container)
         {
             InitializeComponent();
-            _src = container;
-            _sourceType = SourceType.Border;
-            var o = container.Child;
-            container.Child = this;
-            Children.Insert(0,o);
-            _elements.Add(o);
-            o.IsEnabled = false;
+            Layer = new InterLayer(container, Container,this)
+            {
+                EnableChildren = false
+            };
+            Layer.Mount();
             Init(container);
         }
 
@@ -88,7 +70,6 @@ namespace WpfLib.Controls
                 }
             }
         }
-
         public bool Finish()
         {
             if (!Status.Is(CompletableStatus.Completed))
@@ -98,7 +79,6 @@ namespace WpfLib.Controls
             }
             return true;
         }
-
         public Brush MaskColor { get; set; } = new SolidColorBrush(Color.FromArgb(100,100,100,100));
 
         public delegate void CutFinishEvent(Rect region);
@@ -264,30 +244,10 @@ namespace WpfLib.Controls
         }
         private void Recover()
         {
+            Layer.EnableChildren = true;
             Dispatcher.Invoke(() =>
             {
-                switch (_sourceType)
-                {
-                    case SourceType.Panel:
-                        Children.Clear();
-                        ((Panel)_src).Children.Remove(this);
-                        _elements.ForEach(x =>
-                        {
-                            ((Panel)_src).Children.Add(x);
-                            x.IsEnabled = true;
-                        });
-                        break;
-                    case SourceType.ContentControl:
-                        Children.RemoveAt(0);
-                        ((ContentControl)_src).Content = _elements[0];
-                        _elements[0].IsEnabled = true;
-                        break;
-                    case SourceType.Border:
-                        Children.RemoveAt(0);
-                        ((Border)_src).Child = _elements[0];
-                        _elements[0].IsEnabled = true;
-                        break;
-                }
+                Layer.UnMount();
             });
         }
         private void LeftMove(double offset)
@@ -367,8 +327,6 @@ namespace WpfLib.Controls
         private void Thumb_OnDragDelta(object sender, DragDeltaEventArgs e)
         {
             var t = (Thumb)sender;
-            var sp = StartPosition ?? new Point();
-            var ep = EndPosition ?? new Point();
             switch (t.HorizontalAlignment)
             {
                 case HorizontalAlignment.Left:

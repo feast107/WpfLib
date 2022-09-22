@@ -19,26 +19,23 @@ namespace WpfLib.Helpers
         /// 鼠标设备
         /// </summary>
         public MouseDevice Device => _device;
+
         /// <summary>
         /// 初始光标
         /// </summary>
-        public Cursor InitialCursor => _initialCursor;
+        public readonly Cursor InitialCursor;
         #region Private Fields
         private static MouseDevice _device;
-        private static Cursor _initialCursor;
         #endregion
         public CursorHelper(MouseDevice device)
         {
-            if (_device == null)
-            {
-                _device = device;
-                _initialCursor = device.OverrideCursor;
-            }
+            _device ??= device;
+            InitialCursor = device.OverrideCursor;
         }
 
         public bool Recover()
         {
-            return SetCursor(null);
+            return SetCursor(InitialCursor);
         }
 
         public bool SetCursor(Cursor cursor)
