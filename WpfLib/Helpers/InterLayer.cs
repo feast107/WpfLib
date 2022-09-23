@@ -33,7 +33,7 @@ namespace WpfLib.Helpers
     }
 
     #region 针对Panel、Border、ContentControl封装的容器层级
-    public class PanelLayer<TPanel> : DetachableElement where TPanel : Panel
+    public sealed class PanelLayer<TPanel> : DetachableElement where TPanel : Panel
     {
         private readonly TPanel _panel;
         public PanelLayer(TPanel panel):base(panel)
@@ -59,7 +59,7 @@ namespace WpfLib.Helpers
             elements.ForEach(x=>_panel.Children.Add(x));
         }
     }
-    public class BorderLayer<TBorder> : DetachableElement where TBorder : Border
+    public sealed class BorderLayer<TBorder> : DetachableElement where TBorder : Border
     {
         private readonly TBorder _border;
         public BorderLayer(TBorder border):base(border)
@@ -81,7 +81,7 @@ namespace WpfLib.Helpers
             _border.Child = elements[0];
         }
     }
-    public class ContentLayer<TContent> : DetachableElement where TContent : ContentControl
+    public sealed class ContentLayer<TContent> : DetachableElement where TContent : ContentControl
     {
         private readonly TContent _content;
         public ContentLayer(TContent content):base(content)
@@ -106,7 +106,7 @@ namespace WpfLib.Helpers
     #endregion
     
     /// <summary>
-    /// 用来表示夹层的接口
+    /// 用来表示穿插层的接口
     /// </summary>
     public interface IInterLayer
     {
@@ -120,24 +120,24 @@ namespace WpfLib.Helpers
     /// <summary>
     /// 夹层实现类
     /// </summary>
-    public class InterLayer : IInterLayer
+    public sealed class InterLayer : IInterLayer
     {
         public IHaveElement Outer { get; }
         public IHaveElement Inner { get; }
         public bool EnableChildren { get; set; }
 
         #region Inits
-        public InterLayer(Panel outer, Panel inner         , FrameworkElement hook = null)
+        public InterLayer(Panel outer         , Panel inner         , FrameworkElement hook = null)
         {
             Outer = new PanelLayer<Panel>(outer);
             Inner = new PanelLayer<Panel>(inner,hook);
         }
-        public InterLayer(Panel outer, ContentControl inner, FrameworkElement hook = null)
+        public InterLayer(Panel outer         , ContentControl inner, FrameworkElement hook = null)
         {
             Outer = new PanelLayer<Panel>(outer);
             Inner = new ContentLayer<ContentControl>(inner,hook);
         }
-        public InterLayer(Panel outer, Border inner        , FrameworkElement hook = null)
+        public InterLayer(Panel outer         , Border inner        , FrameworkElement hook = null)
         {
             Outer = new PanelLayer<Panel>(outer);
             Inner = new BorderLayer<Border>(inner, hook);
@@ -159,17 +159,17 @@ namespace WpfLib.Helpers
             Inner = new BorderLayer<Border>(inner, hook);
         }
 
-        public InterLayer(Border outer, Panel inner         , FrameworkElement hook = null)
+        public InterLayer(Border outer        , Panel inner         , FrameworkElement hook = null)
         {
             Outer = new BorderLayer<Border>(outer);
             Inner = new PanelLayer<Panel>(inner, hook);
         }
-        public InterLayer(Border outer, ContentControl inner, FrameworkElement hook = null)
+        public InterLayer(Border outer        , ContentControl inner, FrameworkElement hook = null)
         {
             Outer = new BorderLayer<Border>(outer);
             Inner = new ContentLayer<ContentControl>(inner, hook);
         }
-        public InterLayer(Border outer, Border inner        , FrameworkElement hook = null)
+        public InterLayer(Border outer        , Border inner        , FrameworkElement hook = null)
         {
             Outer = new BorderLayer<Border>(outer);
             Inner = new BorderLayer<Border>(inner, hook);
@@ -197,5 +197,4 @@ namespace WpfLib.Helpers
             Outer.MoveIn(new List<UIElement>(){Inner.Hook});
         }
     }
-
 }
