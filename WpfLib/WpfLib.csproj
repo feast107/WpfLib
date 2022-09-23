@@ -96,7 +96,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\Definition\ICompletable.cs" />
+    <Compile Include="Controls\Definition\IStatusMachine.cs" />
     <Compile Include="Controls\ErasePanel.xaml.cs">
       <DependentUpon>ErasePanel.xaml</DependentUpon>
     </Compile>

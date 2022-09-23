@@ -71,10 +71,10 @@ namespace WpfLib.Controls
         }
         public bool Finish()
         {
-            if (!Status.Is(CompletableStatus.Completed))
+            if (!Status.Is(Status.Completed))
             {
                 Recover();
-                Status = CompletableStatus.Canceled;
+                Status = Status.Canceled;
             }
             return true;
         }
@@ -107,8 +107,8 @@ namespace WpfLib.Controls
                     }
                 }
             }
-            MouseUp += Mouseup;
-            MouseMove += (o, e) =>
+            MouseUp    += Mouseup;
+            MouseMove  += (o, e) =>
             {
                 if (Down)
                 {
@@ -132,7 +132,7 @@ namespace WpfLib.Controls
                     {
                         if (StartPosition == null)
                         {
-                            Status = CompletableStatus.Working;
+                            Status = Status.Working;
                             SetStart(e.GetPosition(this));
                         }
                     }
@@ -153,11 +153,11 @@ namespace WpfLib.Controls
                     {
                         Recover();
                         CutFinish?.Invoke(Region);
-                        Status = CompletableStatus.Successful;
+                        Status = Status.Successful;
                     }
-                    if (Status != CompletableStatus.Working)
+                    if (Status != Status.Working)
                     {
-                        Status = CompletableStatus.Working;
+                        Status = Status.Working;
                         SetStart(new Point(0,0));
                         SetEnd(new Point(Width,Height));
                     }
@@ -170,14 +170,14 @@ namespace WpfLib.Controls
                 e.MouseDevice.SetCursor(Cursors.Arrow);
                 MoveLast = new Point();
             }
-            ClipRect.MouseDown += (o, e) =>
+            ClipRect.MouseUp    += DragUp;
+            ClipRect.MouseDown  += (o, e) =>
             {
                 e.MouseDevice.SetCursor(Cursors.Hand);
                 MoveLast = e.GetPosition(this);
                 Drag = true;
             };
-            ClipRect.MouseUp += DragUp;
-            ClipRect.MouseMove += (o, e) =>
+            ClipRect.MouseMove  += (o, e) =>
             {
                 if (Drag)
                 {
@@ -204,7 +204,7 @@ namespace WpfLib.Controls
                 DragUp(o, new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left));
             };
             
-            Status = CompletableStatus.Ready;
+            Status = Status.Ready;
         }
         private void SetStart(Point sp)
         {
@@ -228,7 +228,7 @@ namespace WpfLib.Controls
             ep.X = ep.X > Width ? Width : ep.X < 0 ? 0 : ep.X;
             ep.Y = ep.Y > Height ? Height : ep.Y < 0 ? 0 : ep.Y;
             EndPosition = ep;
-            Rect r = new Rect(StartPosition ?? new Point(), ep);
+            var r = new Rect(StartPosition ?? new Point(), ep);
             var sp = StartPosition = r.TopLeft;
             EndPosition = ep = r.BottomRight;
 
@@ -349,10 +349,10 @@ namespace WpfLib.Controls
 
     }
 
-    public partial class Mask : ICompletable
+    public partial class Mask : IStatusMachine
     {
-        private CompletableStatus _status = CompletableStatus.Created;
-        public CompletableStatus Status
+        private Status _status = Status.Created;
+        public Status Status
         {
             get => _status;
             private set
@@ -364,6 +364,6 @@ namespace WpfLib.Controls
                 }
             }
         }
-        public ICompletable.StatusChangeEvent StatusChange { get; set; }
+        public IStatusMachine.StatusChangeEvent StatusChange { get; set; }
     }
 }

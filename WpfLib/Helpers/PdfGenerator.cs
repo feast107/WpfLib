@@ -22,7 +22,7 @@ namespace WpfLib.Helpers
                 vToXpsD?.Write(visual);
                 vToXpsD?.EndBatchWrite();
             }
-            var document = PXD.Open(ms);
+            using var document = PXD.Open(ms);
             if (string.IsNullOrWhiteSpace(path))
             {
                 path = Path.GetFullPath("Anonymous.pdf");

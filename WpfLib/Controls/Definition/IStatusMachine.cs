@@ -9,7 +9,7 @@ namespace WpfLib.Controls.Definition
     /// 脱手控件的当前状态
     /// </summary>
     [Flags]
-    public enum CompletableStatus
+    public enum Status
     {
         /// <summary>
         /// 已创建
@@ -36,22 +36,26 @@ namespace WpfLib.Controls.Definition
         /// </summary>
         Canceled   = 0x28,//0x20 + 0x8
     }
-    public static class CompletableExtension
+    public static class StatusExtension
     {
-        public static bool Is(this CompletableStatus current, CompletableStatus target)
+        public static bool Is(this Status current, Status target)
         {
             return current.HasFlag(target);
         }
     }
-    public interface ICompletable
+    
+    /// <summary>
+    /// 脱手控件状态机
+    /// </summary>
+    public interface IStatusMachine
     {
-        CompletableStatus Status { get; }
+        Status Status { get; }
         /// <summary>
         /// 强制中断
         /// </summary>
         /// <returns></returns>
         bool Finish();
-        delegate void StatusChangeEvent(CompletableStatus status);
+        delegate void StatusChangeEvent(Status status);
         StatusChangeEvent StatusChange { get; set; }
     }
 }

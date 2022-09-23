@@ -43,7 +43,7 @@ namespace WpfLib.Controls
         {
             InterLayer.Mount();
             InitEvents();
-            Status = CompletableStatus.Ready;
+            Status = Status.Ready;
         }
         private void SetDevice(MouseDevice device)
         {
@@ -71,17 +71,17 @@ namespace WpfLib.Controls
             {
                 if (e.ChangedButton == MouseButton.Right)
                 {
-                    if (Status.Is(CompletableStatus.Working))
+                    if (Status.Is(Status.Working))
                     {
+                        Status = Status.Ready;
                         Source.MouseMove -= EraserMouseMove;
-                        Status = CompletableStatus.Ready;
                         Eraser.Visibility = Visibility.Collapsed;
                         Helper.SetCursor(CurrentCursor = null);
                     }else
                     {
                         Helper?.Recover();
                         Finish();
-                        Status = CompletableStatus.Completed;
+                        Status = Status.Completed;
                     }
                     
                 }
@@ -93,7 +93,7 @@ namespace WpfLib.Controls
             Source.MouseDown  += MouseDown;
             StatusChange += (s) =>
             {
-                if (s.Is(CompletableStatus.Completed))
+                if (s.Is(Status.Completed))
                 {
                     Source.MouseEnter -= MouseEnter;
                     Source.MouseMove -= MouseMove;
@@ -105,7 +105,7 @@ namespace WpfLib.Controls
            
             void Working()
             {
-                Status = CompletableStatus.Working;
+                Status = Status.Working;
                 Helper?.SetCursor(CurrentCursor ??= Cursors.None);
             }
             void Move(Point point)
@@ -131,7 +131,7 @@ namespace WpfLib.Controls
             }
             void ClickAndWidth(object o, RoutedEventArgs e, double width)
             {
-                if (Status.Is(CompletableStatus.Ready))
+                if (Status.Is(Status.Ready))
                 {
                     Working();
                     Eraser.Width = Eraser.Height = width;
@@ -139,7 +139,7 @@ namespace WpfLib.Controls
                     Eraser.Visibility = Visibility.Visible;
                     Source.MouseMove += EraserMouseMove;
                 }
-                else if(Status.Is(CompletableStatus.Working))
+                else if(Status.Is(Status.Working))
                 {
                     Eraser.Width = Eraser.Height = width;
                 }
@@ -161,8 +161,7 @@ namespace WpfLib.Controls
             {
                 ClickAndWidth(o, e, 20);
             };
-
-            Status = CompletableStatus.Ready;
+            Status = Status.Ready;
         }
         #endregion
 
@@ -170,10 +169,10 @@ namespace WpfLib.Controls
 
         public EraseEvent OnErase { get; set; }
     }
-    public partial class ErasePanel : ICompletable
+    public partial class ErasePanel : IStatusMachine
     {
-        private CompletableStatus _status;
-        public CompletableStatus Status
+        private Status _status;
+        public Status Status
         {
             get => _status;
             private set
@@ -190,6 +189,6 @@ namespace WpfLib.Controls
             InterLayer.UnMount();
             return true;
         }
-        public ICompletable.StatusChangeEvent StatusChange { get; set; }
+        public IStatusMachine.StatusChangeEvent StatusChange { get; set; }
     }
 }
