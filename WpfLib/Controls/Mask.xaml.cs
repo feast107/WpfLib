@@ -14,7 +14,6 @@ namespace WpfLib.Controls
     public partial class Mask
     {
         #region Private Fields
-
         private IInterLayer Layer { get; }
         private Point MoveLast { get; set; } 
         private bool Down { get; set; }

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace WpfLib.Helpers
 {
-    public static class MouseDeviceHelper
+    public static class MouseDeviceExtension
     {
         public static bool Recover(this MouseDevice device)
         {
