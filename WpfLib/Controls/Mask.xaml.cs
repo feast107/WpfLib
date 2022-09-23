@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -26,34 +27,26 @@ namespace WpfLib.Controls
         public Mask(Panel container)
         {
             InitializeComponent();
-            Layer = new InterLayer(container, Container,this)
-            {
-                EnableChildren = false
-            };
+            Layer = new InterLayer(container, Container, this);
             Layer.Mount();
             Init(container);
         }
         public Mask(ContentControl container)
         {
             InitializeComponent();
-            Layer = new InterLayer(container, Container,this)
-            {
-                EnableChildren = false
-            };
+            Layer = new InterLayer(container, Container, this);
             Layer.Mount();
             Init(container);
         }
         public Mask(Border container)
         {
             InitializeComponent();
-            Layer = new InterLayer(container, Container,this)
-            {
-                EnableChildren = false
-            };
+            Layer = new InterLayer(container, Container, this);
             Layer.Mount();
             Init(container);
         }
 
+        private FrameworkElement Outer => Layer.Outer.Hook;
      
         public Rect Region
         {
@@ -96,33 +89,33 @@ namespace WpfLib.Controls
                 LeftPanel.Background = 
                     RightPanel.Background = 
                         BottomPanel.Background = MaskColor;
-
-            void Mouseup(object o, MouseButtonEventArgs e)
+       
+            StatusChange += (s) =>
             {
-                if (e.ChangedButton == MouseButton.Left)
+                if (s.Is(Status.Completed))
                 {
-                    if (Down)
-                    {
-                        SetEnd(e.GetPosition(this));
-                    }
+                    Outer.MouseMove -= Mousemove;
                 }
-            }
-            MouseUp    += Mouseup;
-            MouseMove  += (o, e) =>
+            };
+
+            void Mousemove(object o ,MouseEventArgs e)
             {
                 if (Down)
                 {
                     var ep = e.GetPosition(this);
-                    if(ep.X>=0 &&ep.Y >=0 && ep.Y<=Height && ep.X<=Width)
+                    if (ep.X >= 0 &&
+                        ep.Y >= 0 &&
+                        ep.Y <= Height &&
+                        ep.X <= Width)
                     {
                         EndPosition = ep;
                         var sp = StartPosition;
                         if (sp != null)
                         {
-                            TopPanel.Height = (double)sp?.Y > ep.Y ? ep.Y : (double)sp?.Y;
-                            BottomPanel.Height = Height - ((double)sp?.Y > ep.Y ? (double)sp?.Y : ep.Y);
-                            LeftPanel.Width = (double)sp?.X > ep.X ? ep.X : (double)sp?.X;
-                            RightPanel.Width = Width - ((double)sp?.X > ep.X ? (double)sp?.X : ep.X);
+                            TopPanel.Height = Region.Top;
+                            BottomPanel.Height = Height - Region.Bottom;
+                            LeftPanel.Width = Region.Left;
+                            RightPanel.Width = Width - Region.Right;
                         }
                     }
                 }
@@ -137,12 +130,27 @@ namespace WpfLib.Controls
                         }
                     }
                 }
-            };
+            }
+            void Mouseup(object o, MouseButtonEventArgs e)
+            {
+                if (e.ChangedButton == MouseButton.Left)
+                {
+                    if (Down)
+                    {
+                        SetEnd(e.GetPosition(this));
+                    }
+                }
+            }
+            MouseUp    += Mouseup;
+            Outer.MouseMove += Mousemove;
             MouseLeave += (o, e) =>
             {
                 if (Down)
                 {
-                    Mouseup(o, new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left));
+                    if (!new Rect(new Point(0, 0), this.RenderSize).Contains(e.GetPosition(this)))
+                    {
+                        Mouseup(o, new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left));
+                    }
                 }
             };
             MouseDoubleClick += (o, e) =>
