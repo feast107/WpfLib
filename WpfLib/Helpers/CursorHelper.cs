@@ -33,14 +33,14 @@ namespace WpfLib.Helpers
             InitialCursor = device.OverrideCursor;
         }
 
-        public bool Recover()
+        public void Recover()
         {
-            return SetCursor(InitialCursor);
+             SetCursor(InitialCursor);
         }
 
-        public bool SetCursor(Cursor cursor)
+        public void SetCursor(Cursor cursor)
         {
-            return Device.SetCursor(cursor);
+            Device.OverrideCursor =cursor;
         }
     }
 }

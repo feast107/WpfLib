@@ -12,9 +12,10 @@ namespace WpfLib.Controls
     /// <summary>
     /// 用于控件区域截取的控件,左键拖拽，右键取消，双击完成截图
     /// </summary>
-    public partial class Mask : ICompletable
+    public partial class Mask
     {
         #region Private Fields
+
         private IInterLayer Layer { get; }
         private Point MoveLast { get; set; } 
         private bool Down { get; set; }
@@ -75,7 +76,7 @@ namespace WpfLib.Controls
             if (!Status.Is(CompletableStatus.Completed))
             {
                 Recover();
-                ChangeStatus(CompletableStatus.Canceled);
+                Status = CompletableStatus.Canceled;
             }
             return true;
         }
@@ -108,7 +109,6 @@ namespace WpfLib.Controls
                     }
                 }
             }
-
             MouseUp += Mouseup;
             MouseMove += (o, e) =>
             {
@@ -134,7 +134,7 @@ namespace WpfLib.Controls
                     {
                         if (StartPosition == null)
                         {
-                            ChangeStatus(CompletableStatus.Working);
+                            Status = CompletableStatus.Working;
                             SetStart(e.GetPosition(this));
                         }
                     }
@@ -155,11 +155,11 @@ namespace WpfLib.Controls
                     {
                         Recover();
                         CutFinish?.Invoke(Region);
-                        ChangeStatus(CompletableStatus.Successful);
+                        Status = CompletableStatus.Successful;
                     }
                     if (Status != CompletableStatus.Working)
                     {
-                        ChangeStatus(CompletableStatus.Working);
+                        Status = CompletableStatus.Working;
                         SetStart(new Point(0,0));
                         SetEnd(new Point(Width,Height));
                     }
@@ -206,7 +206,7 @@ namespace WpfLib.Controls
                 DragUp(o, new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left));
             };
             
-            ChangeStatus(CompletableStatus.Ready);
+            Status = CompletableStatus.Ready;
         }
         private void SetStart(Point sp)
         {
@@ -347,16 +347,25 @@ namespace WpfLib.Controls
             }
         }
 
-        private void ChangeStatus(CompletableStatus status)
-        {
-            Status = status;
-            StatusChange?.Invoke(Status);
-        }
-
         #endregion
 
-        public CompletableStatus Status { get; private set; } = CompletableStatus.Created;
-        public ICompletable.StatusChangeEvent StatusChange { get; set; }
+    }
 
+    public partial class Mask : ICompletable
+    {
+        private CompletableStatus _status = CompletableStatus.Created;
+        public CompletableStatus Status
+        {
+            get => _status;
+            private set
+            {
+                if (value != _status)
+                {
+                    _status = value;
+                    StatusChange?.Invoke(_status);
+                }
+            }
+        }
+        public ICompletable.StatusChangeEvent StatusChange { get; set; }
     }
 }
