@@ -232,7 +232,7 @@ namespace WpfLib.Controls
             EndPosition = ep;
             Rect r = new Rect(StartPosition ?? new Point(), ep);
             var sp = StartPosition = r.TopLeft;
-            EndPosition = r.BottomRight;
+            EndPosition = ep = r.BottomRight;
 
             TopPanel.Height = (double)sp?.Y;
             BottomPanel.Height = Height - ep.Y;
