@@ -15,6 +15,7 @@ namespace WpfLib.Controls
     public partial class Mask
     {
         #region Private Fields
+        private FrameworkElement Outer => Layer.Outer.Hook;
         private IInterLayer Layer { get; }
         private Point MoveLast { get; set; } 
         private bool Down { get; set; }
@@ -46,7 +47,7 @@ namespace WpfLib.Controls
             Init(container);
         }
 
-        private FrameworkElement Outer => Layer.Outer.Hook;
+        
      
         public Rect Region
         {
@@ -77,7 +78,7 @@ namespace WpfLib.Controls
         public CutFinishEvent CutFinish { get; set; }
 
         #region Private Methods
-     
+        
         private void Init(FrameworkElement container)
         {
             Height = container.ActualHeight;
