@@ -100,6 +100,7 @@
     <Compile Include="Controls\ErasePanel.xaml.cs">
       <DependentUpon>ErasePanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Effects\Hover.cs" />
     <Compile Include="Controls\Mask.xaml.cs">
       <DependentUpon>Mask.xaml</DependentUpon>
     </Compile>
@@ -108,6 +109,9 @@
     </Compile>
     <Compile Include="Entrance\Factory.cs" />
     <Compile Include="Helpers\CursorHelper.cs" />
+    <Compile Include="Helpers\IHaveBackground.cs" />
+    <Compile Include="Helpers\IHaveForeground.cs" />
+    <Compile Include="Helpers\IHaveUi.cs" />
     <Compile Include="Helpers\IInputCatcher.cs" />
     <Compile Include="Helpers\InterLayer.cs" />
     <Compile Include="Helpers\Implement\InputCatcher.cs" />
@@ -138,5 +142,6 @@
   <ItemGroup>
     <Resource Include="PdfSharp.SharpZipLib\ReadMe.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
