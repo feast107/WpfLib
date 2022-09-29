@@ -82,7 +82,18 @@ namespace WpfLib.Effects
         #region Private fields
         private Brush Color
         {
-            get => _subject.Color ??= new SolidColorBrush();
+            get
+            {
+                if (_subject.Color == null)
+                {
+                    _subject.Color = new SolidColorBrush();
+                }
+                else if(_subject.Color.IsFrozen)
+                {
+                    _subject.Color = new SolidColorBrush(((SolidColorBrush)_subject.Color).Color);
+                }
+                return _subject.Color;
+            }
             set => _subject.Color = value;
         }
         private Brush Origin { get; set; }
@@ -123,7 +134,7 @@ namespace WpfLib.Effects
             Story.Stop();
             Story = new();
             InitAnimation();
-            Color = Origin;
+            Color = Origin?.CloneCurrentValue();
         }
         #endregion
     }
