@@ -113,7 +113,13 @@ namespace WpfLib.Helpers
         IHaveElement Outer { get; }
         IHaveElement Inner { get; }
         bool EnableChildren { get; set; }
+        /// <summary>
+        /// 复原
+        /// </summary>
         void UnMount();
+        /// <summary>
+        /// 挂载，将穿插层插入
+        /// </summary>
         void Mount();
     }
     
