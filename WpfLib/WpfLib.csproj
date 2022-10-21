@@ -45,19 +45,33 @@
     <Reference Include="HiraokaHyperTools.PdfSharp-WPF, Version=1.31.6209.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <HintPath>..\..\ZBclass\packages\kenjiuno.PdfSharp-WPF.1.31.6209\lib\net40\HiraokaHyperTools.PdfSharp-WPF.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\EasyRecord\EasyRecord\packages\Newtonsoft.Json.13.0.2-beta2\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PdfSharp, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\..\ZBclass\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.dll</HintPath>
+      <HintPath>..\..\EasyRecord\EasyRecord\packages\PDFsharp.1.51.5185-beta\lib\net20\PdfSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PdfSharp-WPF, Version=1.32.2608.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\..\ZBclass\packages\PdfSharp.Xps.1.0.0\lib\PdfSharp-WPF.dll</HintPath>
+      <HintPath>..\..\EasyRecord\EasyRecord\packages\PdfSharp.Xps.1.0.0\lib\PdfSharp-WPF.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp.Charting, Version=1.50.5147.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\..\ZBclass\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.Charting.dll</HintPath>
+      <HintPath>..\..\EasyRecord\EasyRecord\packages\PDFsharp.1.51.5185-beta\lib\net20\PdfSharp.Charting.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PdfSharp.Xps, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\..\ZBclass\packages\PdfSharp.Xps.1.0.0\lib\PdfSharp.Xps.dll</HintPath>
+      <HintPath>..\..\EasyRecord\EasyRecord\packages\PdfSharp.Xps.1.0.0\lib\PdfSharp.Xps.dll</HintPath>
     </Reference>
     <Reference Include="ReachFramework" />
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\..\EasyRecord\EasyRecord\packages\SharpDX.4.2.0\lib\net40\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\..\EasyRecord\EasyRecord\packages\SharpDX.Direct2D1.4.2.0\lib\net40\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\..\EasyRecord\EasyRecord\packages\SharpDX.DXGI.4.2.0\lib\net40\SharpDX.DXGI.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -90,16 +104,44 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Font.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Geometries.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Template.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\PenDrawer\Definition\StrokeDefinition.cs" />
+    <Compile Include="Controls\PenDrawer\Interface\IDrawBehavior.cs" />
     <Compile Include="Controls\Definition\IStatusMachine.cs" />
     <Compile Include="Controls\ErasePanel.xaml.cs">
       <DependentUpon>ErasePanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PenDrawer\AdvancedDrawer.cs" />
+    <Compile Include="Controls\PenDrawer\DirectXDrawer.cs" />
+    <Compile Include="Controls\PenDrawer\Base\DrawerBase.cs" />
+    <Compile Include="Controls\PenDrawer\DrawingVisualElement.cs" />
+    <Compile Include="Controls\PenDrawer\FragmentDrawer.cs" />
+    <Compile Include="Controls\PenDrawer\Model\PointModel.cs" />
+    <Compile Include="Controls\PenDrawer\Model\StrokeModel.cs" />
+    <Compile Include="Controls\PenDrawer\Base\PathBasedDrawer.cs" />
+    <Compile Include="Controls\PenDrawer\RealTimeDrawer.cs" />
+    <Compile Include="Controls\PenDrawer\VisualDrawer.cs" />
     <Compile Include="Effects\Hover.cs" />
     <Compile Include="Controls\Mask.xaml.cs">
       <DependentUpon>Mask.xaml</DependentUpon>
