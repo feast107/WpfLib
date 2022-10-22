@@ -37,10 +37,10 @@
       <HintPath>..\..\..\..\VisualStudio\Project\AP\packages\Castle.Core.3.3.3\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor, Version=3.4.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\VisualStudio\Project\AP\packages\Castle.Windsor.3.4.0\lib\net40\Castle.Windsor.dll</HintPath>
+      <HintPath>..\..\EasyRecord\EasyRecord\packages\Castle.Windsor.3.4.0\lib\net40\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="HandyControl, Version=3.3.0.0, Culture=neutral, PublicKeyToken=45be8712787a1e5b, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\VisualStudio\Project\AP\packages\HandyControl.3.3.0\lib\net40\HandyControl.dll</HintPath>
+      <HintPath>..\..\EasyRecord\EasyRecord\packages\HandyControl.3.3.0\lib\net40\HandyControl.dll</HintPath>
     </Reference>
     <Reference Include="HiraokaHyperTools.PdfSharp-WPF, Version=1.31.6209.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <HintPath>..\..\ZBclass\packages\kenjiuno.PdfSharp-WPF.1.31.6209\lib\net40\HiraokaHyperTools.PdfSharp-WPF.dll</HintPath>
