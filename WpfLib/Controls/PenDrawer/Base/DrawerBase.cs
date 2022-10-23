@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using WpfLib.Controls.PenDrawer.Definition;
@@ -10,6 +13,42 @@ namespace WpfLib.Controls.PenDrawer.Base
 {
     public abstract class DrawerBase : IDrawBehavior
     {
+        protected DrawerBase(int width, int height,IDrawBehavior.PageDirection direction)
+        {
+            Direction = direction;
+            RenderQueue = RenderLead;
+            StartRender();
+            switch (direction)
+            {
+                case IDrawBehavior.PageDirection.Vertical:
+                    var ws = (int)(width / 210f * 297f);
+                    if (ws > height)
+                    {
+                        width = (int)(height / (297f / 210f));
+                    }
+                    else
+                    {
+                        height = ws;
+                    }
+                    break;
+                case IDrawBehavior.PageDirection.Horizontal:
+                    var hs = (int)(height / 210f * 297f);
+                    if (hs > width)
+                    {
+                        height = (int)(width / (297f / 210f));
+                    }
+                    else
+                    {
+                        width = hs;
+                    }
+                    break;
+            }
+            ActualHeight = height;
+            ActualWidth = width;
+            Scale = width / 5600f;
+        }
+        public abstract FrameworkElement Canvas { get ;}
+        
         public Brush ColorAsBrush
         {
             get
@@ -48,43 +87,9 @@ namespace WpfLib.Controls.PenDrawer.Base
                 return 1;
             }
         }
-
-        public abstract FrameworkElement Canvas { get ;}
-
         protected int ActualWidth { get; }
         protected int ActualHeight { get; }
         public float Scale { get; set; }
-        protected DrawerBase(int width, int height,IDrawBehavior.PageDirection direction)
-        {
-            switch (direction)
-            {
-                case IDrawBehavior.PageDirection.Vertical:
-                    var ws = (int)(width / 210f * 297f);
-                    if (ws > height)
-                    {
-                        width = (int)(height / (297f / 210f));
-                    }
-                    else
-                    {
-                        height = ws;
-                    }
-                    break;
-                case IDrawBehavior.PageDirection.Horizontal:
-                    var hs = (int)(height / 210f * 297f);
-                    if (hs > width)
-                    {
-                        height = (int)(width / (297f / 210f));
-                    }
-                    else
-                    {
-                        width = hs;
-                    }
-                    break;
-            }
-            ActualHeight = height;
-            ActualWidth = width;
-            Scale = width / 5600f;
-        }
 
         public IDrawBehavior.PageDirection Direction { get; }
         public IDrawBehavior.DrawStatus Status { get; private set; }
@@ -92,6 +97,7 @@ namespace WpfLib.Controls.PenDrawer.Base
         public StrokeThickness Thickness { get; set; } = StrokeThickness.VeryThin;
         public abstract IList<StrokeModel> Strokes { get; }
 
+        #region Methods
         public virtual void OnPenUp()
         {
             Status = IDrawBehavior.DrawStatus.Waiting;
@@ -105,6 +111,34 @@ namespace WpfLib.Controls.PenDrawer.Base
             Status = IDrawBehavior.DrawStatus.Drawing;
         }
         public abstract void Erase(Rect rubber);
+        #endregion
 
+        #region Renders
+        private Task RenderLead { get; set; } = new(()=>{ });
+        private Task RenderQueue { get; set; }
+        public bool IsRendering { get; private set; } = false;
+        public void QueueRender(Action action)
+        {
+            RenderQueue = RenderQueue.ContinueWith((t) =>
+            {
+                action();
+            }, TaskContinuationOptions.AttachedToParent);
+        }
+        public void StartRender()
+        {
+            if (!IsRendering)
+            {
+                RenderLead.Start();
+                IsRendering = true;
+            }
+        }
+        public void PauseRender()
+        {
+            if (!IsRendering) return;
+            RenderLead = new Task(() => { });
+            RenderQueue = RenderLead;
+            IsRendering = false;
+        }
+        #endregion
     }
 }

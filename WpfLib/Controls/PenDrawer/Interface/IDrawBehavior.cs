@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using WpfLib.Controls.PenDrawer.Definition;
 using WpfLib.Controls.PenDrawer.Model;
@@ -37,9 +38,22 @@ namespace WpfLib.Controls.PenDrawer.Interface
         void OnPenUp();
         void OnPenDown();
         void OnPenMove(Point point);
-
         void Erase(Rect rubber);
         #endregion
 
+        bool IsRendering { get; }
+        /// <summary>
+        /// 添加渲染队列
+        /// </summary>
+        /// <param name="action"></param>
+        void QueueRender(Action action);
+        /// <summary>
+        /// 启动渲染(默认启动)
+        /// </summary>
+        void StartRender();
+        /// <summary>
+        /// 暂停渲染
+        /// </summary>
+        void PauseRender();
     }
 }
