@@ -17,7 +17,7 @@ namespace WpfLib.Controls.PenDrawer.Base
     {
         protected StrokeModel GetStroke()
         {
-            StrokeModel model = new StrokeModel
+            StrokeModel model = new ()
             {
                 Path = StoreCurrent.Path.Data.ToString(),
                 Color = Color,
@@ -85,7 +85,6 @@ namespace WpfLib.Controls.PenDrawer.Base
                 }
             }
         }
-
         public override void Erase(int from, int to)
         {
             if (from > to || from < 0 || to > BackupDictionary.Count) return;
@@ -96,7 +95,6 @@ namespace WpfLib.Controls.PenDrawer.Base
                 InternalCanvas.Children.RemoveAt(i);
             }
         }
-
         public override void Erase(int from)
         {
             if (from < 0 || from >= BackupDictionary.Count) return;

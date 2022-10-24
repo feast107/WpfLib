@@ -30,8 +30,6 @@ namespace WpfLib.Entrance
                 .For<IInputCatcher>()
                 .ImplementedBy<InputCatcher>()
                 .LifestyleTransient());
-
-            
         }
         public static T Resolve<T>()
         {

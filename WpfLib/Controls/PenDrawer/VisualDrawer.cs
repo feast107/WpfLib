@@ -20,7 +20,7 @@ namespace WpfLib.Controls.PenDrawer
             };
            _canvas.DrawingVisual.Drawing?.Open().DrawImage(new BitmapImage(),new Rect());
         }
-        private BitmapImage _source = new BitmapImage();
+        private BitmapImage _source = new ();
 
         public override FrameworkElement Canvas => _canvas;
 

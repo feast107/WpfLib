@@ -53,38 +53,29 @@ namespace WpfLib.Controls.PenDrawer.Base
         {
             get
             {
-                switch (Color)
+                return Color switch
                 {
-                    case StrokeColor.Black:
-                        return Brushes.Black;
-                    case StrokeColor.Blue:
-                        return Brushes.Blue;
-                    case StrokeColor.Green:
-                        return Brushes.Green;
-                    case StrokeColor.Red:
-                        return Brushes.Red;
-                }
-                return Brushes.Black;
+                    StrokeColor.Black => Brushes.Black,
+                    StrokeColor.Blue => Brushes.Blue,
+                    StrokeColor.Green => Brushes.Green,
+                    StrokeColor.Red => Brushes.Red,
+                    _ => Brushes.Black
+                };
             }
         }
         public double ThicknessAsStroke
         {
             get
             {
-                switch (Thickness)
+                return Thickness switch
                 {
-                    case StrokeThickness.VeryThin:
-                        return 1;
-                    case StrokeThickness.Thin:
-                        return 2;
-                    case StrokeThickness.Medium:
-                        return 3;
-                    case StrokeThickness.Bold:
-                        return 4;
-                    case StrokeThickness.VeryBold:
-                        return 5;
-                }
-                return 1;
+                    StrokeThickness.VeryThin => 1,
+                    StrokeThickness.Thin => 2,
+                    StrokeThickness.Medium => 3,
+                    StrokeThickness.Bold => 4,
+                    StrokeThickness.VeryBold => 5,
+                    _ => 1
+                };
             }
         }
         protected int ActualWidth { get; }
