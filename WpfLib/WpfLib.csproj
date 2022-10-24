@@ -104,6 +104,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\WaveBall.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Font.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -142,6 +146,9 @@
     <Compile Include="Controls\PenDrawer\Base\PathBasedDrawer.cs" />
     <Compile Include="Controls\PenDrawer\RealTimeDrawer.cs" />
     <Compile Include="Controls\PenDrawer\VisualDrawer.cs" />
+    <Compile Include="Controls\WaveBall.xaml.cs">
+      <DependentUpon>WaveBall.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Effects\Hover.cs" />
     <Compile Include="Controls\Mask.xaml.cs">
       <DependentUpon>Mask.xaml</DependentUpon>

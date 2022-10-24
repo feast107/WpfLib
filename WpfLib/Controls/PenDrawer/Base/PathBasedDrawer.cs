@@ -85,5 +85,28 @@ namespace WpfLib.Controls.PenDrawer.Base
                 }
             }
         }
+
+        public override void Erase(int from, int to)
+        {
+            if (from > to || from < 0 || to > BackupDictionary.Count) return;
+            OnPenUp();
+            for (int i = to; i > from ;i--)
+            {
+                BackupDictionary.Remove((Path)InternalCanvas.Children[i]);
+                InternalCanvas.Children.RemoveAt(i);
+            }
+        }
+
+        public override void Erase(int from)
+        {
+            if (from < 0 || from >= BackupDictionary.Count) return;
+            OnPenUp();
+            while (BackupDictionary.Count > from)
+            {
+                int i = BackupDictionary.Count - 1;
+                BackupDictionary.Remove((Path)InternalCanvas.Children[i]);
+                InternalCanvas.Children.RemoveAt(i);
+            }
+        }
     }
 }

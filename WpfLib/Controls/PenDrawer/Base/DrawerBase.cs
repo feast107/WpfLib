@@ -96,6 +96,7 @@ namespace WpfLib.Controls.PenDrawer.Base
         public StrokeColor Color { get; set; } = StrokeColor.Black;
         public StrokeThickness Thickness { get; set; } = StrokeThickness.VeryThin;
         public abstract IList<StrokeModel> Strokes { get; }
+        public int StrokeCount => Strokes.Count;
 
         #region Methods
         public virtual void OnPenUp()
@@ -110,7 +111,12 @@ namespace WpfLib.Controls.PenDrawer.Base
         {
             Status = IDrawBehavior.DrawStatus.Drawing;
         }
+
+
         public abstract void Erase(Rect rubber);
+        public abstract void Erase(int from, int to);
+        public abstract void Erase(int from);
+
         #endregion
 
         #region Renders
@@ -139,6 +145,13 @@ namespace WpfLib.Controls.PenDrawer.Base
             RenderQueue = RenderLead;
             IsRendering = false;
         }
+
+        public void CleanRender()
+        {
+            RenderLead = new Task(() => { });
+            RenderQueue = RenderLead;
+        }
+
         #endregion
     }
 }

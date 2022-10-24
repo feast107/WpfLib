@@ -46,5 +46,15 @@ namespace WpfLib.Controls.PenDrawer
         {
             throw new NotImplementedException();
         }
+
+        public override void Erase(int from, int to)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Erase(int from)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

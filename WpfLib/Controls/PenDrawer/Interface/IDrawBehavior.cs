@@ -33,12 +33,14 @@ namespace WpfLib.Controls.PenDrawer.Interface
         StrokeColor Color { get; set; } 
         StrokeThickness Thickness { get; set; }
         IList<StrokeModel> Strokes { get; }
-
+        int StrokeCount { get; }
         #region 绘制事件
         void OnPenUp();
         void OnPenDown();
         void OnPenMove(Point point);
         void Erase(Rect rubber);
+        void Erase(int from, int to);
+        void Erase(int from);
         #endregion
 
         bool IsRendering { get; }
@@ -55,5 +57,9 @@ namespace WpfLib.Controls.PenDrawer.Interface
         /// 暂停渲染
         /// </summary>
         void PauseRender();
+        /// <summary>
+        /// 清空渲染队列，放弃之后的渲染
+        /// </summary>
+        void CleanRender();
     }
 }

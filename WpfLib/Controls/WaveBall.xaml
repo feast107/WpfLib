@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="WpfLib.Controls.WaveBall"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfLib.Controls"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             mc:Ignorable="d" >
+    <Grid Background="Transparent" Name="Outer">
+        <hc:TransitioningContentControl Name="Transition" TransitionMode="Bottom2Top">
+            <Grid>
+                <hc:WaveProgressBar Name="Waver"
+                    WaveThickness="5"
+                    BorderThickness="1"
+                    Background="#50b2b2b2"
+                    Value="0" 
+                    ShowText="False"
+                    WaveStroke="#FFFF0080">
+                    <hc:WaveProgressBar.WaveFill>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop x:Name="Grad1"  Color="#66FF0080" Offset="0"/>
+                            <GradientStop x:Name="Grad2" Color="#FFFF0080" Offset="1"/>
+                        </LinearGradientBrush>
+                    </hc:WaveProgressBar.WaveFill>
+                </hc:WaveProgressBar>
+                <Label HorizontalAlignment="Center" Name="Label"
+                       VerticalAlignment="Center" 
+                       Background="Transparent"
+                       FontSize="30"
+                       Foreground="AliceBlue"
+                       BorderThickness="0">0%</Label>
+            </Grid>
+        </hc:TransitioningContentControl>
+</Grid>
+</UserControl>
