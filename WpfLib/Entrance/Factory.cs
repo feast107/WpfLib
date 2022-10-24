@@ -23,7 +23,6 @@ namespace WpfLib.Entrance
             Init();
         }
         #endregion
-
         private void Init()
         {
             Container.Register(Component
