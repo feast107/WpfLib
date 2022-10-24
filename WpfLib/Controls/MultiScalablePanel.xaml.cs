@@ -14,21 +14,16 @@ namespace WpfLib.Controls
         /// <summary>
         /// 初始化尺寸
         /// </summary>
-        /// <param name="initialSize"></param>
-        public MultiScalablePanel(Size initialSize)
+        public MultiScalablePanel()
         {
-            if (Size.IsEmpty)
-            {
-                throw new ArgumentException("尺寸不可为空");
-            }
-            Size = initialSize;
             InitializeComponent();
             Init();
         }
+
         /// <summary>
         /// 内单元大小
         /// </summary>
-        public Size Size { get; private set; }
+        public Size Size { get; set; } = new Size(100,100);
         /// <summary>
         /// 缩放尺度
         /// </summary>
