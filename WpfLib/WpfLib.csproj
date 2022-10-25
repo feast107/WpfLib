@@ -160,6 +160,7 @@
     <Compile Include="Helpers\InterLayer.cs" />
     <Compile Include="Helpers\Implement\InputCatcher.cs" />
     <Compile Include="Helpers\PdfGenerator.cs" />
+    <Compile Include="Helpers\TimeExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

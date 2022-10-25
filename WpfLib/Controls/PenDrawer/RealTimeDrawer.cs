@@ -48,7 +48,7 @@ namespace WpfLib.Controls.PenDrawer
         {
             base.OnPenMove(point);
             var basePoint = point;
-            point = new Point((int)(point.X * Scale), (int)(point.Y * Scale));
+            point = new Point((point.X * Scale), (point.Y * Scale));
             if (Last == point)
             {
                 return;

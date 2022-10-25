@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfLib.Controls.PenDrawer.Interface;
 using WpfLib.Controls.PenDrawer.Model;
+using WpfLib.Helpers;
 
 namespace WpfLib.Controls.PenDrawer.Base
 {
@@ -20,22 +21,22 @@ namespace WpfLib.Controls.PenDrawer.Base
         {
             StrokeModel model = new ()
             {
-                Path = StoreCurrent.Path.Data.ToString(),
+                Path = StoreCurrent.Points.PointsToStroke(),
                 Color = Color,
                 Thickness = Thickness,
-                Timestamp = DateTime.Now.ToBinary(),
-                X1 = (int)StoreCurrent.FirstPoint?.X,
-                Y1 = (int)StoreCurrent.FirstPoint?.Y
+                Timestamp = DateTime.Now.TimeStamp(),
+                X1 = StoreCurrent.Points[0].X,
+                Y1 = StoreCurrent.Points[0].Y
             };
             return model;
         }
         protected abstract class PathGenerator
         {
-            public Point? FirstPoint { get;  private set; }
+            public List<PointModel> Points = new();
             public Path Path { get; }
             protected PathGenerator(Brush brush, double thickness)
             {
-                Path = new Path()
+                Path = new()
                 {
                     Stroke = brush,
                     StrokeThickness = thickness,
@@ -44,7 +45,10 @@ namespace WpfLib.Controls.PenDrawer.Base
 
             public virtual void Draw(Point point)
             {
-                FirstPoint ??= point;
+                Points.Add(new PointModel()
+                {
+                    X = (int)point.X,Y= (int)point.Y
+                });
             }
             public virtual void End(){}
         }

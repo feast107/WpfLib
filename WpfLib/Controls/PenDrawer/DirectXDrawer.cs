@@ -21,7 +21,7 @@ namespace WpfLib.Controls.PenDrawer
 
         public override IList<StrokeModel> Strokes => throw new NotImplementedException();
 
-        private readonly FrameworkElement _canvas;
+        private readonly FrameworkElement _canvas = null;
         private SwapChain _swapChain;
 
         private void InitializeDeviceResources()

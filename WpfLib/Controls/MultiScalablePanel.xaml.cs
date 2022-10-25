@@ -151,7 +151,7 @@ namespace WpfLib.Controls
                     = (int)(ActualWidth / (Size.Width + Spacing * 2));
 
             if(CalcColumnCount > Children.Count)
-                RealColumnCount = Children.Count;
+                RealColumnCount = Children.Count == 0 ? 1 : Children.Count;
             SpacingPanel.Width = Size.Width * RealColumnCount + (RealColumnCount - 1) * Spacing;
 
 

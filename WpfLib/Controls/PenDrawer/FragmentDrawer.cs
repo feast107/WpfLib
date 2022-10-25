@@ -35,8 +35,8 @@ namespace WpfLib.Controls.PenDrawer
             {
                 DrawCurrent.End();
                 StoreCurrent.End();
-                BackupDictionary.Add(DrawCurrent.Path,GetStroke());
             });
+            BackupDictionary.Add(DrawCurrent.Path,GetStroke());
             DrawCurrent = null;
             StoreCurrent = null;
         }

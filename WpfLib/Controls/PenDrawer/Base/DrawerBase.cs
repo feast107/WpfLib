@@ -17,7 +17,7 @@ namespace WpfLib.Controls.PenDrawer.Base
             Direction = direction;
             RenderQueue = RenderLead;
             StartRender();
-            Size s = Resize(size, direction);
+            var s = Resize(size, direction);
             ActualHeight = (int)s.Height;
             ActualWidth = (int)s.Width;
             Scale = (float)s.Width / 5600f;
