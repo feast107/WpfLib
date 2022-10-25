@@ -11,7 +11,7 @@ namespace WpfLib.Controls.PenDrawer
 {
     public class VisualDrawer : DrawerBase
     {
-        public VisualDrawer(int width, int height, IDrawBehavior.PageDirection direction = IDrawBehavior.PageDirection.Vertical) : base(width, height, direction)
+        public VisualDrawer(Size size, IDrawBehavior.PageDirection direction = IDrawBehavior.PageDirection.Vertical) : base(size, direction)
         {
             _canvas = new DrawingVisualElement()
             {

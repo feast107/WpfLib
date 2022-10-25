@@ -120,27 +120,26 @@ namespace WpfLib.Controls
             };
             SpacingPanel.MouseWheel += (o, e) =>
             {
-                if (Keyboard.IsKeyDown(ZoomKey))
+                if (!Keyboard.IsKeyDown(ZoomKey)) return;
+
+                ScrollViewer.CanMouseWheel = false;
+                var p = e.GetPosition(SpacingPanel);
+                if (e.Delta > 0)
                 {
-                    ScrollViewer.CanMouseWheel = false;
-                    var p = e.GetPosition(SpacingPanel);
-                    if (e.Delta > 0)
+                    if ( (Size.Width + Spacing * 2) * Scale < ActualWidth)
                     {
-                        if ( (Size.Width + Spacing * 2) * Scale < ActualWidth)
-                        {
-                            Size = new Size(Size.Width * Scale, Size.Height * Scale);
-                            Resize();
-                            SilentScroll(p.Y * Scale - e.GetPosition(ScrollViewer).Y);
-                        }
-                    }
-                    else
-                    {
-                        Size = new Size(Size.Width / Scale, Size.Height / Scale);
+                        Size = new Size(Size.Width * Scale, Size.Height * Scale);
                         Resize();
-                        SilentScroll(p.Y / Scale - e.GetPosition(ScrollViewer).Y);
+                        SilentScroll(p.Y * Scale - e.GetPosition(ScrollViewer).Y);
                     }
-                    ScrollViewer.CanMouseWheel = true;
                 }
+                else
+                {
+                    Size = new Size(Size.Width / Scale, Size.Height / Scale);
+                    Resize();
+                    SilentScroll(p.Y / Scale - e.GetPosition(ScrollViewer).Y);
+                }
+                ScrollViewer.CanMouseWheel = true;
             };
         }
        

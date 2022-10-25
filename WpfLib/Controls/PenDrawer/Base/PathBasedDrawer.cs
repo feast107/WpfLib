@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,12 +23,15 @@ namespace WpfLib.Controls.PenDrawer.Base
                 Path = StoreCurrent.Path.Data.ToString(),
                 Color = Color,
                 Thickness = Thickness,
-                Timestamp = DateTime.Now.ToBinary()
+                Timestamp = DateTime.Now.ToBinary(),
+                X1 = (int)StoreCurrent.FirstPoint?.X,
+                Y1 = (int)StoreCurrent.FirstPoint?.Y
             };
             return model;
         }
         protected abstract class PathGenerator
         {
+            public Point? FirstPoint { get;  private set; }
             public Path Path { get; }
             protected PathGenerator(Brush brush, double thickness)
             {
@@ -37,16 +41,26 @@ namespace WpfLib.Controls.PenDrawer.Base
                     StrokeThickness = thickness,
                 };
             }
-            public abstract void Draw(Point point);
+
+            public virtual void Draw(Point point)
+            {
+                FirstPoint ??= point;
+            }
             public virtual void End(){}
         }
         
-        protected PathBasedDrawer(int width, int height, IDrawBehavior.PageDirection direction) : base(width, height,direction)
+        protected PathBasedDrawer(Size size, IDrawBehavior.PageDirection direction) : base(size,direction)
         {
             InternalCanvas = new Canvas()
             {
                 Width = ActualWidth,
                 Height = ActualHeight,
+            };
+            InternalCanvas.SizeChanged += (o, e) =>
+            {
+                Size target = Resize(e.NewSize, direction);
+                InternalCanvas.Width = target.Width;
+                InternalCanvas.Height = target.Height;
             };
         }
         public override FrameworkElement Canvas => InternalCanvas;

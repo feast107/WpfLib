@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Castle.Core.Internal;
 
 namespace WpfLib.Helpers
 {
@@ -56,7 +56,7 @@ namespace WpfLib.Helpers
         }
         public override void MoveIn(IList<UIElement> elements)
         {
-            elements.ForEach(x=>_panel.Children.Add(x));
+            elements.ToList().ForEach(x=>_panel.Children.Add(x));
         }
     }
     public sealed class BorderLayer<TBorder> : DetachableElement where TBorder : Border

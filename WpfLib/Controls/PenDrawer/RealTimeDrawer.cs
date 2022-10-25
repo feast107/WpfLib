@@ -1,14 +1,20 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Media;
 using WpfLib.Controls.PenDrawer.Base;
 using WpfLib.Controls.PenDrawer.Interface;
+using WpfLib.Controls.PenDrawer.Model;
 
 namespace WpfLib.Controls.PenDrawer
 {
     public partial class RealTimeDrawer : PathBasedDrawer
     {
-        public RealTimeDrawer(int width, int height, IDrawBehavior.PageDirection direction = IDrawBehavior.PageDirection.Vertical) :base(width, height,direction) 
-        { }
+        public RealTimeDrawer(Size size, IDrawBehavior.PageDirection direction = IDrawBehavior.PageDirection.Vertical)
+            :base(size,direction) { }
+
+        public RealTimeDrawer(int width,int height, IDrawBehavior.PageDirection direction = IDrawBehavior.PageDirection.Vertical)
+            : base(new Size(width,height), direction) { }
+
         #region Private fields
         private Point Last { get; set; }
         #endregion
@@ -31,7 +37,9 @@ namespace WpfLib.Controls.PenDrawer
             base.OnPenUp();
             InternalCanvas.Dispatcher.Invoke(() =>
             {
-                BackupDictionary.Add(DrawCurrent.Path,GetStroke());
+                StrokeModel s = GetStroke();
+                var key = DrawCurrent.Path;
+                BackupDictionary.Add(key,s);
             });
             DrawCurrent = null;
             StoreCurrent = null;
@@ -45,7 +53,6 @@ namespace WpfLib.Controls.PenDrawer
             {
                 return;
             }
-
             if (DrawCurrent == null)
             {
                 OnPenDown();
@@ -79,6 +86,7 @@ namespace WpfLib.Controls.PenDrawer
 
             public override void Draw(Point point)
             {
+                base.Draw(point);
                 if (PathFigures.Count == 0)
                 {
                     PathFigures.Add(PathFigure = new()

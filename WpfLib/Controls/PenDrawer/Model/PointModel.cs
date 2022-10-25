@@ -2,7 +2,7 @@
 
 namespace WpfLib.Controls.PenDrawer.Model
 {
-    public abstract class PointModel
+    public class PointModel
     {
         [JsonProperty("x")]
         public int X { get; set; }

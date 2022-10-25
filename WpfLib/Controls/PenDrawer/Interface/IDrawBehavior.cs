@@ -9,7 +9,7 @@ namespace WpfLib.Controls.PenDrawer.Interface
     /// <summary>
     /// 点阵笔绘制行为
     /// </summary>
-    public interface IDrawBehavior
+    public interface IDrawBehavior : IExportStroke
     {
         /// <summary>
         /// 显示控件
@@ -28,12 +28,12 @@ namespace WpfLib.Controls.PenDrawer.Interface
             Vertical,
         }
 
+        int ActualWidth { get; }
+        int ActualHeight { get; }
         PageDirection Direction { get; }
         DrawStatus Status { get; } 
         StrokeColor Color { get; set; } 
         StrokeThickness Thickness { get; set; }
-        IList<StrokeModel> Strokes { get; }
-        int StrokeCount { get; }
         #region 绘制事件
         void OnPenUp();
         void OnPenDown();

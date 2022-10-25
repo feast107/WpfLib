@@ -12,7 +12,7 @@ namespace WpfLib.Controls.PenDrawer
 {
     public class DirectXDrawer :DrawerBase
     {
-        public DirectXDrawer(int width, int height, IDrawBehavior.PageDirection direction = IDrawBehavior.PageDirection.Vertical) : base(width, height,direction)
+        public DirectXDrawer(Size size, IDrawBehavior.PageDirection direction = IDrawBehavior.PageDirection.Vertical) : base(size,direction)
         { 
         }
 

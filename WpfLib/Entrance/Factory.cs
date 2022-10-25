@@ -1,6 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using WpfLib.Helpers;
+﻿using WpfLib.Helpers;
 using WpfLib.Helpers.Implement;
 
 namespace WpfLib.Entrance
@@ -17,7 +15,6 @@ namespace WpfLib.Entrance
         }
         private static readonly object Lock = new();
         private static  Factory _instance;
-        private WindsorContainer Container { get; } = new();
         private Factory()
         {
             Init();
@@ -25,14 +22,8 @@ namespace WpfLib.Entrance
         #endregion
         private void Init()
         {
-            Container.Register(Component
-                .For<IInputCatcher>()
-                .ImplementedBy<InputCatcher>()
-                .LifestyleTransient());
+         
         }
-        public static T Resolve<T>()
-        {
-            return Instance.Container.Resolve<T>();
-        }
+       
     }
 }

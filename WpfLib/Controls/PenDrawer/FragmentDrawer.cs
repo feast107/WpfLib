@@ -7,9 +7,11 @@ namespace WpfLib.Controls.PenDrawer
 {
     public partial class FragmentDrawer : PathBasedDrawer
     {
-        public FragmentDrawer(int width, int height, IDrawBehavior.PageDirection direction = IDrawBehavior.PageDirection.Vertical) : base(width, height, direction)
-        { }
+        public FragmentDrawer(Size size, IDrawBehavior.PageDirection direction = IDrawBehavior.PageDirection.Vertical) 
+            : base(size,direction) { }
 
+        public FragmentDrawer(int width,int height, IDrawBehavior.PageDirection direction = IDrawBehavior.PageDirection.Vertical)
+            : base(new Size(width,height), direction) { }
         #region Private Fields
 
         private Point Last { get; set; }
@@ -75,6 +77,7 @@ namespace WpfLib.Controls.PenDrawer
             private bool IsGet { get; set; } = false;
             public override void Draw(Point point)
             {
+                base.Draw(point);
                 if (!IsGet)
                 {
                     StreamContext.BeginFigure(point, true, false);

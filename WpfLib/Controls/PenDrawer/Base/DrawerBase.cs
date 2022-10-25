@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -13,11 +12,21 @@ namespace WpfLib.Controls.PenDrawer.Base
 {
     public abstract class DrawerBase : IDrawBehavior
     {
-        protected DrawerBase(int width, int height,IDrawBehavior.PageDirection direction)
+        protected DrawerBase(Size size,IDrawBehavior.PageDirection direction)
         {
             Direction = direction;
             RenderQueue = RenderLead;
             StartRender();
+            Size s = Resize(size, direction);
+            ActualHeight = (int)s.Height;
+            ActualWidth = (int)s.Width;
+            Scale = (float)s.Width / 5600f;
+        }
+
+        protected static Size Resize(Size from, IDrawBehavior.PageDirection direction)
+        {
+            double width = from.Width;
+            double height = from.Height;
             switch (direction)
             {
                 case IDrawBehavior.PageDirection.Vertical:
@@ -43,10 +52,9 @@ namespace WpfLib.Controls.PenDrawer.Base
                     }
                     break;
             }
-            ActualHeight = height;
-            ActualWidth = width;
-            Scale = width / 5600f;
+            return new Size(width, height);
         }
+
         public abstract FrameworkElement Canvas { get ;}
         
         public Brush ColorAsBrush
@@ -78,8 +86,8 @@ namespace WpfLib.Controls.PenDrawer.Base
                 };
             }
         }
-        protected int ActualWidth { get; }
-        protected int ActualHeight { get; }
+        public int ActualWidth { get; }
+        public int ActualHeight { get; }
         public float Scale { get; set; }
 
         public IDrawBehavior.PageDirection Direction { get; }
