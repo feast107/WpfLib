@@ -31,4 +31,16 @@
         <Border Background="{DynamicResource PrimaryBrush}">
         </Border>
     </hc:TabItem>
+
+    <Button x:Key="TwistButton" HorizontalAlignment="Right"
+                  VerticalAlignment="Bottom"
+                  Background="#409EFF"
+                  hc:IconElement.Geometry="{StaticResource Twist90}"
+                  Margin="20" Height="40" Width="40" Padding="0" BorderThickness="0"
+                  Foreground="AliceBlue" hc:IconElement.Width="35" hc:IconElement.Height="35">
+    </Button>
+    <hc:CircleProgressBar x:Key="Progress"
+        IsIndeterminate="True" 
+        Foreground="CornflowerBlue"
+        Width="200" Height="200" ArcThickness="10" />
 </ResourceDictionary> 

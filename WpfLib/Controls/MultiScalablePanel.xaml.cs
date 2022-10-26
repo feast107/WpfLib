@@ -46,7 +46,15 @@ namespace WpfLib.Controls
                 }
             }
         }
-
+        /// <summary>
+        /// 缩放事件
+        /// </summary>
+        /// <param name="newSize"></param>
+        public delegate void ResizeEvent(Size newSize);
+        /// <summary>
+        /// 缩放之后的事件
+        /// </summary>
+        public ResizeEvent AfterResize { get; set; }
         /// <summary>
         /// 控制伴随滚轮的缩放键，默认为LeftCtrl
         /// </summary>
@@ -160,7 +168,9 @@ namespace WpfLib.Controls
                 child.RenderSize = Size;
                 child.Width = Size.Width;
                 child.Height = Size.Height;
+                child.Measure(Size);
             }
+            AfterResize?.Invoke(Size);
         }
         private void ZoomMax()
         {
@@ -179,30 +189,24 @@ namespace WpfLib.Controls
         }
         private void OnItemMouseDown(object o,MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left &&
-                e.ClickCount == 2)
+            if (e.ChangedButton != MouseButton.Left || e.ClickCount != 2) return;
+            ZoomMax();
+            int index = 0;
+            while (index < Children.Count)
             {
-                ZoomMax();
-                int index = 0;
-                while (index < Children.Count)
+                if (Children[index].Equals(o))
                 {
-                    if (Children[index].Equals(o))
-                    {
-                        break;
-                    }
-                    index++;
+                    break;
                 }
-                Resize();
-                double offSet = index * (Size.Height + Spacing);
-                SilentScroll(offSet);
+                index++;
             }
+            Resize();
+            var offSet = index * (Size.Height + Spacing);
+            SilentScroll(offSet);
         }
         private void SilentScroll(double offset)
         {
-            if (AutoInertiaEnabler != null)
-            {
-                AutoInertiaEnabler.Stop();
-            }
+            AutoInertiaEnabler?.Stop();
             ScrollViewer.IsInertiaEnabled = false;
             ScrollViewer.ScrollToVerticalOffset(offset);
             AutoInertiaEnabler = new Timer() { Interval = 300,AutoReset = false};

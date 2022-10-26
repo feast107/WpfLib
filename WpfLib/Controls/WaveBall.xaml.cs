@@ -26,6 +26,7 @@ namespace WpfLib.Controls
         {
             InitializeComponent();
         }
+#nullable enable
         private Sprite? Sprite { get; set; }
 
         public bool IsShowed { get; private set; }
