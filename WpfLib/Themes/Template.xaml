@@ -2,13 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:hc="https://handyorg.github.io/handycontrol"
                     xmlns:o="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
-                    xmlns:controls="https://handyorg.github.io/handycontrol">
+                    xmlns:controls="https://handyorg.github.io/handycontrol" >
         <ResourceDictionary.MergedDictionaries>
             <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
             <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
         </ResourceDictionary.MergedDictionaries>
-    <controls:TransitioningContentControl  x:Shared="False"  
-                                           x:Key="DrawBorder" 
+    <controls:TransitioningContentControl  x:Shared="False"  x:Key="DrawBorder" 
                                            TransitionMode="Top2BottomWithFade">
         <Border Style="{StaticResource BorderRegion}" 
                 Effect="{StaticResource EffectShadow2}"
@@ -19,28 +18,20 @@
             </hc:Badge>
         </Border>
     </controls:TransitioningContentControl>
-
-    <Geometry x:Key="Tools" x:Shared="False">
-            M874.666667 533.333333v256a64 64 0 0 1-64 64H213.333333a64 64 0 0 1-64-64V533.333333h256v128h213.333334v-128h256z m-320 0v64h-85.333334v-64h85.333334z 
-            m85.333333-384a64 64 0 0 1 64 64v170.666667h42.666667v-85.333333h64a64 64 0 0 1 64 64v106.666666H149.333333v-106.666666a64 64 0 0 1 64-64h64v85.333333h42.666667v-170.666667a64 64 0 0 1 64-64h256z 
-            m0 64H384v85.333334h256v-85.333334z
-    </Geometry>
-
     <hc:TabItem x:Shared="False" x:Key="PenInfo" 
                 hc:IconElement.Height="16" hc:IconElement.Width="16">
         <Border Background="{DynamicResource PrimaryBrush}">
         </Border>
     </hc:TabItem>
-
-    <Button x:Key="TwistButton" HorizontalAlignment="Right"
-                  VerticalAlignment="Bottom"
-                  Background="#409EFF"
-                  hc:IconElement.Geometry="{StaticResource Twist90}"
-                  Margin="20" Height="40" Width="40" Padding="0" BorderThickness="0"
-                  Foreground="AliceBlue" hc:IconElement.Width="35" hc:IconElement.Height="35">
+    <Button x:Key="TwistButton" x:Shared="False"
+            HorizontalAlignment="Right" VerticalAlignment="Bottom"
+            Background="#409EFF" Margin="20" Height="40" Width="40"
+            hc:IconElement.Geometry="{StaticResource Twist90}"
+            Padding="0" BorderThickness="0"
+            Foreground="AliceBlue" hc:IconElement.Width="35" hc:IconElement.Height="35">
     </Button>
-    <hc:CircleProgressBar x:Key="Progress"
+    <hc:CircleProgressBar x:Key="Progress" x:Shared="False"
         IsIndeterminate="True" 
         Foreground="CornflowerBlue"
-        Width="200" Height="200" ArcThickness="10" />
+        ArcThickness="10" Width="200" Height="200" Margin="20" Padding="20"/>
 </ResourceDictionary> 
