@@ -90,6 +90,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\InvisibleTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Mask.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -124,6 +128,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\InvisibleTab.xaml.cs">
+      <DependentUpon>InvisibleTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PenDrawer\Definition\StrokeDefinition.cs" />
     <Compile Include="Controls\PenDrawer\Interface\IDrawBehavior.cs" />
     <Compile Include="Controls\Definition\IStatusMachine.cs" />

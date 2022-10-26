@@ -36,7 +36,10 @@ namespace WpfLib.Controls.PenDrawer
                 DrawCurrent.End();
                 StoreCurrent.End();
             });
-            BackupDictionary.Add(DrawCurrent.Path,GetStroke());
+            if (StoreCurrent != null && StoreCurrent.Points.Count > 0)
+            {
+                InternalCanvas.Dispatcher.Invoke(() => { BackupDictionary.Add(DrawCurrent.Path, GetStroke()); });
+            }
             DrawCurrent = null;
             StoreCurrent = null;
         }

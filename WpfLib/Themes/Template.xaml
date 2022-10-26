@@ -33,5 +33,15 @@
     <hc:CircleProgressBar x:Key="Progress" x:Shared="False"
         IsIndeterminate="True" 
         Foreground="CornflowerBlue"
-        ArcThickness="10" Width="200" Height="200" Margin="20" Padding="20"/>
+        ArcThickness="10" Width="200" 
+        Height="200" Margin="20" Padding="20"/>
+    <hc:TabItem x:Key="DrawerTab"  Visibility="Collapsed">
+        <hc:ScrollViewer x:Name="MainScroll" 
+                         VerticalScrollBarVisibility="Visible"
+                         HorizontalScrollBarVisibility="Visible"
+                         IsInertiaEnabled="True">
+            <Grid>
+            </Grid>
+        </hc:ScrollViewer>
+    </hc:TabItem>
 </ResourceDictionary> 

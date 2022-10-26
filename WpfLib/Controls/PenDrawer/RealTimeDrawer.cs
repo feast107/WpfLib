@@ -35,12 +35,11 @@ namespace WpfLib.Controls.PenDrawer
         public override void OnPenUp()
         {  
             base.OnPenUp();
-            InternalCanvas.Dispatcher.Invoke(() =>
+            if (StoreCurrent != null && StoreCurrent.Points.Count > 0)
             {
-                StrokeModel s = GetStroke();
-                var key = DrawCurrent.Path;
-                BackupDictionary.Add(key,s);
-            });
+                InternalCanvas.Dispatcher.Invoke(() => { BackupDictionary.Add(DrawCurrent.Path, GetStroke()); });
+            }
+
             DrawCurrent = null;
             StoreCurrent = null;
         }

@@ -1,0 +1,18 @@
+﻿<hc:TabItem x:Class="WpfLib.Controls.InvisibleTab"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:local="clr-namespace:WpfLib.Controls"
+            xmlns:hc="https://handyorg.github.io/handycontrol"
+            mc:Ignorable="d" 
+             Visibility="Visible" IsEnabled="False" BorderThickness="0"
+            Background="#EEEEEE" Foreground="#EEEEEE">
+    <hc:ScrollViewer x:Name="MainScroll" 
+                     VerticalScrollBarVisibility="Visible"
+                     HorizontalScrollBarVisibility="Visible"
+                     IsInertiaEnabled="True">
+        <Grid Name="Container">
+        </Grid>
+    </hc:ScrollViewer>
+</hc:TabItem>
