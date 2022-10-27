@@ -25,7 +25,7 @@ namespace WpfLib.Controls.PenDrawer.Model
         [JsonProperty("y1")]
         public virtual int Y1 { get; set; }
 
-        public void CopyFrom(StrokeModel other)
+        public StrokeModel CopyFrom(StrokeModel other)
         {
             this.Path = other.Path;
             this.Color = other.Color;
@@ -33,6 +33,7 @@ namespace WpfLib.Controls.PenDrawer.Model
             this.Timestamp = other.Timestamp;
             this.X1 = other.X1;
             this.Y1 = other.Y1;
+            return this;
         }
     }
     public static class StrokeExtension
