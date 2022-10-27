@@ -6,7 +6,7 @@
             xmlns:local="clr-namespace:WpfLib.Controls"
             xmlns:hc="https://handyorg.github.io/handycontrol"
             mc:Ignorable="d" 
-             Visibility="Visible" IsEnabled="False" BorderThickness="0"
+             Visibility="Visible" IsEnabled="False" BorderThickness="0,0,0,1"
             Background="#EEEEEE" Foreground="#EEEEEE">
     <hc:ScrollViewer x:Name="MainScroll" 
                      VerticalScrollBarVisibility="Visible"

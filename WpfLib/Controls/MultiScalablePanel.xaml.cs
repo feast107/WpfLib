@@ -19,7 +19,10 @@ namespace WpfLib.Controls
             InitializeComponent();
             Init();
         }
-
+        /// <summary>
+        /// 是否可以滚动
+        /// </summary>
+        public bool CanScroll { get => ScrollViewer.CanMouseWheel; set => ScrollViewer.CanMouseWheel = value; }
         /// <summary>
         /// 内单元大小
         /// </summary>
