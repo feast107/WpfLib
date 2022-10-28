@@ -30,7 +30,7 @@ namespace WpfLib.Controls.PenDrawer.Interface
 
         int ActualWidth { get; }
         int ActualHeight { get; }
-        PageDirection Direction { get; }
+        PageDirection Direction { get; set; }
         DrawStatus Status { get; } 
         StrokeColor Color { get; set; } 
         StrokeThickness Thickness { get; set; }

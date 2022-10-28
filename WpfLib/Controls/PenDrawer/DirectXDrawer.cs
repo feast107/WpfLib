@@ -17,7 +17,8 @@ namespace WpfLib.Controls.PenDrawer
         }
 
         private static D2D.Factory Factory { get; } = new D2D.Factory();
-        public override FrameworkElement Canvas  => _canvas; 
+        public override FrameworkElement Canvas  => _canvas;
+        public override IDrawBehavior.PageDirection Direction { get; set; }
 
         public override IList<StrokeModel> Strokes => throw new NotImplementedException();
 

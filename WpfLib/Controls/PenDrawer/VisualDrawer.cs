@@ -23,6 +23,7 @@ namespace WpfLib.Controls.PenDrawer
         private BitmapImage _source = new ();
 
         public override FrameworkElement Canvas => _canvas;
+        public override IDrawBehavior.PageDirection Direction { get; set; }
 
         public override IList<StrokeModel> Strokes => throw new NotImplementedException();
 

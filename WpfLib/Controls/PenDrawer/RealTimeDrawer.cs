@@ -39,7 +39,6 @@ namespace WpfLib.Controls.PenDrawer
             {
                 InternalCanvas.Dispatcher.Invoke(() => { BackupDictionary.Add(DrawCurrent.Path, GetStroke()); });
             }
-
             DrawCurrent = null;
             StoreCurrent = null;
         }
@@ -77,12 +76,10 @@ namespace WpfLib.Controls.PenDrawer
             /// 当前线条集合
             /// </summary>
             private PathFigureCollection PathFigures { get; }
-
             public PathFigureGenerator(Brush brush,double thickness):base(brush,thickness)
             {
                 Path.Data = new PathGeometry(){ Figures = PathFigures = new()};
             }
-
             public override void Draw(Point point)
             {
                 base.Draw(point);

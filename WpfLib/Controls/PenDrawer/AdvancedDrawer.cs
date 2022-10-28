@@ -14,7 +14,8 @@ namespace WpfLib.Controls.PenDrawer
 {
     public class AdvancedDrawer : DrawerBase
     {
-        public override FrameworkElement Canvas  => _canvas; 
+        public override FrameworkElement Canvas  => _canvas;
+        public override IDrawBehavior.PageDirection Direction { get; set; }
         private readonly Canvas _canvas;
         private readonly List<Point> _points = new();
         public AdvancedDrawer(Size size, IDrawBehavior.PageDirection direction = IDrawBehavior.PageDirection.Vertical) :base(size,direction)

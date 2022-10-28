@@ -14,7 +14,6 @@ namespace WpfLib.Controls.PenDrawer.Base
     {
         protected DrawerBase(Size size,IDrawBehavior.PageDirection direction)
         {
-            Direction = direction;
             RenderQueue = RenderLead;
             StartRender();
             var s = Resize(size, direction);
@@ -86,11 +85,12 @@ namespace WpfLib.Controls.PenDrawer.Base
                 };
             }
         }
-        public int ActualWidth { get; }
-        public int ActualHeight { get; }
+        public int ActualWidth { get; protected set; }
+        public int ActualHeight { get; protected set; }
         public float Scale { get; set; }
 
-        public IDrawBehavior.PageDirection Direction { get; }
+        public abstract IDrawBehavior.PageDirection Direction { get; set; }
+
         public IDrawBehavior.DrawStatus Status { get; private set; }
         public StrokeColor Color { get; set; } = StrokeColor.Black;
         public StrokeThickness Thickness { get; set; } = StrokeThickness.VeryThin;

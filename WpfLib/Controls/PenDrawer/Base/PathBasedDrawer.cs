@@ -55,6 +55,7 @@ namespace WpfLib.Controls.PenDrawer.Base
         
         protected PathBasedDrawer(Size size, IDrawBehavior.PageDirection direction) : base(size,direction)
         {
+            _directionInternal = direction;
             InternalCanvas = new Canvas()
             {
                 Width = ActualWidth,
@@ -68,6 +69,28 @@ namespace WpfLib.Controls.PenDrawer.Base
             };
         }
         public override FrameworkElement Canvas => InternalCanvas;
+
+        public override IDrawBehavior.PageDirection Direction
+        {
+            get => _directionInternal;
+            set
+            {
+                if (_directionInternal != value)
+                {
+                    _directionInternal = value;
+                    int tmp = ActualHeight;
+                    ActualHeight = ActualWidth;
+                    ActualWidth = tmp;
+                    InternalCanvas.Dispatcher.Invoke(() =>
+                    {
+                        InternalCanvas.Width = ActualWidth;
+                        InternalCanvas.Height = ActualHeight;
+                    });
+                }
+            }
+        }
+
+        private IDrawBehavior.PageDirection _directionInternal;
 
         protected readonly Canvas InternalCanvas;
         /// <summary>
