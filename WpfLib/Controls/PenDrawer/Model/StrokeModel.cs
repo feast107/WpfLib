@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using WpfLib.Controls.PenDrawer.Definition;
 
 namespace WpfLib.Controls.PenDrawer.Model
 {
-    public class StrokeModel
+    public class StrokeModel : ICloneable<StrokeModel>
     {
         public StrokeModel() { }
         /// <summary>
@@ -25,14 +26,15 @@ namespace WpfLib.Controls.PenDrawer.Model
         [JsonProperty("y1")]
         public virtual int Y1 { get; set; }
 
-        public StrokeModel CopyFrom(StrokeModel other)
+        private static readonly PropertyInfo[] Props = typeof(StrokeModel).GetProperties();
+
+        public StrokeModel From(StrokeModel from)
         {
-            this.Path = other.Path;
-            this.Color = other.Color;
-            this.Thickness = other.Thickness;
-            this.Timestamp = other.Timestamp;
-            this.X1 = other.X1;
-            this.Y1 = other.Y1;
+            foreach (var t in Props)
+            {
+                if (t.CanWrite && t.CanRead)
+                    t.SetValue(this, t.GetValue(from, null), null);
+            }
             return this;
         }
     }

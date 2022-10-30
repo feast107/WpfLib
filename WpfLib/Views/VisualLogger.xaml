@@ -1,0 +1,83 @@
+﻿<Window x:Class="WpfLib.Views.VisualLogger"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        mc:Ignorable="d"
+        Title="输出窗" Height="600" Width="400" Name="Window">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Expander x:Key="Content" x:Shared="False" Background="{Binding HeaderBack}"
+                      Foreground="{Binding HeaderFore}"
+                      Margin="0,0,15,0" Header="{Binding }">
+                <Expander.HeaderTemplate>
+                    <DataTemplate >
+                        <hc:RunningBlock SizeChanged="OnRunningBlock_SizeChanged" Margin="0" 
+                                         MouseEnter="UIElement_OnMouseEnter" MouseLeave="UIElement_OnMouseLeave"
+                                         Runaway="False" AutoRun="False" 
+                                         FontSize="15" BorderThickness="0" Padding="0"
+                                         HorizontalAlignment="Left" IsRunning="{Binding Running,Mode=OneWay}"  
+                                         Foreground="{Binding HeaderFore}" Duration="0:0:10"
+                                         Content="{Binding Text}"></hc:RunningBlock>
+                    </DataTemplate>
+                </Expander.HeaderTemplate>
+                <ListBox  Padding="10,5" 
+                         ItemsSource="{Binding Frames}" >
+                    <ListBox.Resources>
+                        <SolidColorBrush x:Key="PrimaryBrush" Color="{Binding ListBack}">
+                        </SolidColorBrush>
+                    </ListBox.Resources>
+                    <ListBox.ItemTemplate >
+                        <DataTemplate >
+                            <TextBlock FontSize="13" Text="{Binding Method}">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem >
+                                            <MenuItem.Template>
+                                                <ControlTemplate>
+                                                    <StackPanel Margin="8,0">
+                                                        <TextBox Margin="0,0,0,5"
+                                                            Text="{Binding FilePath}" 
+                                                            MouseDoubleClick="DoubleClickTextBox"
+                                                                 IsReadOnly="True">
+                                                        </TextBox>
+                                                        <TextBlock >
+                                                            <Run Text="行数："></Run>
+                                                            <Run Text="{Binding Row}"></Run>
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </ControlTemplate>
+                                            </MenuItem.Template>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Expander>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Border Background="AliceBlue" Name="Border" >
+        <Grid Name="Simple" >
+            <hc:ScrollViewer Name="ScrollViewer"
+                             hc:ScrollViewerAttach.AutoHide="False"  
+                             Orientation="Vertical" 
+                             HorizontalScrollBarVisibility="Hidden" 
+                             IsInertiaEnabled="True">
+                <hc:UniformSpacingPanel  Margin="0" Width="{Binding Width ,ElementName=Window}" 
+                                         Orientation="Vertical" hc:ScrollViewer.IsPenetrating="True"
+                                         DataContext="{Binding}"
+                                         Name="DebugList">
+                </hc:UniformSpacingPanel>
+            </hc:ScrollViewer>
+            <hc:GotoTop Animated="True" AutoHiding="True" 
+                        AnimationTime="500"
+                        Target="{Binding ElementName=ScrollViewer}"
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Bottom" 
+                        Margin="0,0,20,20"/>
+        </Grid>
+    </Border>
+</Window>
