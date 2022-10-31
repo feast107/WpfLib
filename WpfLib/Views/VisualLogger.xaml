@@ -4,11 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:viewmodel="clr-namespace:WpfLib.Views.ViewModel"
         mc:Ignorable="d"
-        Title="输出窗" Height="600" Width="400" Name="Window">
+        Title="Visual" Height="600" Width="400" Name="Window">
     <Window.Resources>
         <ResourceDictionary>
-            <Expander x:Key="Content" x:Shared="False" Background="{Binding HeaderBack}"
+            <Expander x:Key="Content" x:Shared="False" 
+                      d:DataContext="{d:DesignInstance viewmodel:LogViewModel,IsDesignTimeCreatable=True}"
+                      Background="{Binding HeaderBack}"
                       Foreground="{Binding HeaderFore}"
                       Margin="0,0,15,0" Header="{Binding }">
                 <Expander.HeaderTemplate>
@@ -68,7 +71,6 @@
                              IsInertiaEnabled="True">
                 <hc:UniformSpacingPanel  Margin="0" Width="{Binding Width ,ElementName=Window}" 
                                          Orientation="Vertical" hc:ScrollViewer.IsPenetrating="True"
-                                         DataContext="{Binding}"
                                          Name="DebugList">
                 </hc:UniformSpacingPanel>
             </hc:ScrollViewer>

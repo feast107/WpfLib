@@ -26,7 +26,6 @@ namespace WpfLib.Controls.PenDrawer
             InternalCanvas.Dispatcher.Invoke(() =>
             {
                 DrawCurrent = new PathStreamGenerator(ColorAsBrush, ThicknessAsStroke);
-                StoreCurrent = new PathStreamGenerator(ColorAsBrush, ThicknessAsStroke);
             });
         }
         public override void OnPenUp()
@@ -34,14 +33,9 @@ namespace WpfLib.Controls.PenDrawer
             InternalCanvas.Dispatcher.Invoke(() =>
             {
                 DrawCurrent.End();
-                StoreCurrent.End();
             });
-            if (StoreCurrent != null && StoreCurrent.Points.Count > 0)
-            {
-                InternalCanvas.Dispatcher.Invoke(() => { BackupDictionary.Add(DrawCurrent.Path, GetStroke()); });
-            }
+          
             DrawCurrent = null;
-            StoreCurrent = null;
         }
         public override void OnPenMove(Point point)
         {
@@ -58,7 +52,6 @@ namespace WpfLib.Controls.PenDrawer
             InternalCanvas.Dispatcher.Invoke(() =>
             {
                 DrawCurrent.Draw(point);
-                StoreCurrent.Draw(basePoint);
             });
             Last = point;
         }

@@ -135,6 +135,7 @@
     <Compile Include="Controls\InvisibleTab.xaml.cs">
       <DependentUpon>InvisibleTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PenDrawer\Base\StrokeSaver.cs" />
     <Compile Include="Controls\PenDrawer\Definition\ICloneable.cs" />
     <Compile Include="Controls\PenDrawer\Definition\StrokeDefinition.cs" />
     <Compile Include="Controls\PenDrawer\Interface\IDrawBehavior.cs" />

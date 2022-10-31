@@ -30,24 +30,19 @@ namespace WpfLib.Controls.PenDrawer
             InternalCanvas.Dispatcher.Invoke(() =>
             {
                 DrawCurrent = new BezierFigureGenerator(ColorAsBrush, ThicknessAsStroke);
-                StoreCurrent = new BezierFigureGenerator(ColorAsBrush, ThicknessAsStroke);
                 InternalCanvas.Children.Add(DrawCurrent.Path);
             });
         }
+
         public override void OnPenUp()
-        {  
+        {
             base.OnPenUp();
-            if (StoreCurrent != null && StoreCurrent.Points.Count > 0)
-            {
-                InternalCanvas.Dispatcher.Invoke(() => { BackupDictionary.Add(DrawCurrent.Path, GetStroke()); });
-            }
             DrawCurrent = null;
-            StoreCurrent = null;
         }
+
         public override void OnPenMove(Point point)
         {
             base.OnPenMove(point);
-            var basePoint = point;
             point = new Point((point.X * Scale), (point.Y * Scale));
             if (Last == point)
             {
@@ -60,7 +55,6 @@ namespace WpfLib.Controls.PenDrawer
             InternalCanvas.Dispatcher.Invoke(() =>
             {
                 DrawCurrent.Draw(point);
-                StoreCurrent.Draw(basePoint);
             });
             Last = point;
         }

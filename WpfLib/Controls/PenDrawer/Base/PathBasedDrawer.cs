@@ -17,19 +17,6 @@ namespace WpfLib.Controls.PenDrawer.Base
     /// </summary>
     public abstract class PathBasedDrawer :DrawerBase
     {
-        protected StrokeModel GetStroke()
-        {
-            StrokeModel model = new ()
-            {
-                Path = StoreCurrent.Points.PointsToStroke(),
-                Color = Color,
-                Thickness = Thickness,
-                Timestamp = DateTime.Now.TimeStamp(),
-                X1 = StoreCurrent.Points[0].X,
-                Y1 = StoreCurrent.Points[0].Y
-            };
-            return model;
-        }
         protected abstract class PathGenerator
         {
             public List<PointModel> Points = new();
@@ -97,16 +84,7 @@ namespace WpfLib.Controls.PenDrawer.Base
         /// 当前绘制笔迹
         /// </summary>
         protected PathGenerator DrawCurrent { get; set; }
-        /// <summary>
-        /// 当前待存笔迹
-        /// </summary>
-        protected PathGenerator StoreCurrent { get; set; }
         
-        /// <summary>
-        /// 对笔记进行的存储
-        /// </summary>
-        protected readonly Dictionary<Path, StrokeModel> BackupDictionary = new();
-        public override IList<StrokeModel> Strokes => BackupDictionary.Values.ToList();
 
         public override void Erase(Rect rubber)
         {
@@ -120,7 +98,7 @@ namespace WpfLib.Controls.PenDrawer.Base
                 var detail = ((Path)InternalCanvas.Children[i]).Data.FillContainsWithDetail(r);
                 if (detail != IntersectionDetail.Empty)
                 {
-                    BackupDictionary.Remove((Path)InternalCanvas.Children[i]);
+                    Saver.Remove(i);
                     InternalCanvas.Children.RemoveAt(i);
                     i--;
                 }
@@ -128,22 +106,22 @@ namespace WpfLib.Controls.PenDrawer.Base
         }
         public override void Erase(int from, int to)
         {
-            if (from > to || from < 0 || to > BackupDictionary.Count) return;
+            if (from > to || from < 0 || to > StrokeCount) return;
             OnPenUp();
             for (int i = to; i > from ;i--)
             {
-                BackupDictionary.Remove((Path)InternalCanvas.Children[i]);
+                Saver.Remove(i);
                 InternalCanvas.Children.RemoveAt(i);
             }
         }
         public override void Erase(int from)
         {
-            if (from < 0 || from >= BackupDictionary.Count) return;
+            if (from < 0 || from >= StrokeCount) return;
             OnPenUp();
-            while (BackupDictionary.Count > from)
+            while (StrokeCount > from)
             {
-                int i = BackupDictionary.Count - 1;
-                BackupDictionary.Remove((Path)InternalCanvas.Children[i]);
+                int i = StrokeCount - 1;
+                Saver.Remove(i);
                 InternalCanvas.Children.RemoveAt(i);
             }
         }

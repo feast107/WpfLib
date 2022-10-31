@@ -20,7 +20,6 @@ namespace WpfLib.Controls.PenDrawer
         public override FrameworkElement Canvas  => _canvas;
         public override IDrawBehavior.PageDirection Direction { get; set; }
 
-        public override IList<StrokeModel> Strokes => throw new NotImplementedException();
 
         private readonly FrameworkElement _canvas = null;
         private SwapChain _swapChain;

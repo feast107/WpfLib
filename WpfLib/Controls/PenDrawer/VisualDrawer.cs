@@ -25,7 +25,6 @@ namespace WpfLib.Controls.PenDrawer
         public override FrameworkElement Canvas => _canvas;
         public override IDrawBehavior.PageDirection Direction { get; set; }
 
-        public override IList<StrokeModel> Strokes => throw new NotImplementedException();
 
         private readonly DrawingVisualElement _canvas;
         public override void OnPenUp()

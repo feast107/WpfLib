@@ -30,7 +30,6 @@ namespace WpfLib.Controls.PenDrawer
         protected StreamGeometry Stream { get; set; }
         private Point Last { get; set; }
 
-        public override IList<StrokeModel> Strokes => throw new NotImplementedException();
 
         public override void OnPenDown()
         {

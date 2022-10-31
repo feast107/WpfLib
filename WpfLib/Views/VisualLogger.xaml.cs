@@ -13,9 +13,98 @@ using System.Windows.Media;
 using HandyControl.Controls;
 using HandyControl.Data;
 using WpfLib.Helpers;
+using WpfLib.Views.ViewModel;
 using ScrollViewer = HandyControl.Controls.ScrollViewer;
 using TextBox = System.Windows.Controls.TextBox;
 using Window = System.Windows.Window;
+
+namespace WpfLib.Views.ViewModel
+{
+    public enum LogType : byte
+    {
+        Log,
+        Info,
+        Debug,
+        Warn,
+        Error,
+        Fatal,
+    }
+
+    #region Definitions
+
+    public class LogViewModel : ViewModelBase
+    {
+        public Brush HeaderFore
+        {
+            get => _headerFore;
+            set => SetValue(ref _headerFore, value);
+        }
+
+        private Brush _headerFore;
+
+        public Color ListBack
+        {
+            get => _listBack;
+            set => SetValue(ref _listBack, value);
+        }
+
+        private Color _listBack;
+
+        public Brush HeaderBack
+        {
+            get => _headerBack;
+            set
+            {
+                SetValue(ref _headerBack, value);
+                HeaderBackDefault ??= value;
+            }
+        }
+
+        private Brush _headerBack;
+        public Brush HeaderBackDefault { get; private set; }
+
+
+        public bool Running { get; set; } = false;
+
+        public string Text
+        {
+            get => _text;
+            set => SetValue(ref _text, value);
+        }
+
+        private string _text;
+
+        public ObservableCollection<StackViewModel> Frames { get; } = new();
+    }
+
+    public class StackViewModel : ViewModelBase
+    {
+        public string Method
+        {
+            get => _method;
+            set => SetValue(ref _method, value);
+        }
+
+        private string _method;
+
+        public string FilePath
+        {
+            get => _filePath;
+            set => SetValue(ref _filePath, value);
+        }
+
+        private string _filePath;
+
+        public int Row
+        {
+            get => _row;
+            set => SetValue(ref _row, value);
+        }
+
+        private int _row;
+    }
+    #endregion
+}
 
 namespace WpfLib.Views
 {
@@ -24,70 +113,11 @@ namespace WpfLib.Views
     /// </summary>
     public partial class VisualLogger : Window, ILogger
     {
-        enum LogType : byte
-        {
-            Log,
-            Info,
-            Debug,
-            Warn,
-            Error,
-            Fatal,
-        }
-        #region Definitions
-        private class DebugViewModel : ViewModelBase
-        {
-            public Brush HeaderFore { get => _headerFore; set => SetValue(ref _headerFore, value); }
-            private Brush _headerFore;
-
-            public Color ListBack { get => _listBack; set => SetValue(ref _listBack, value); }
-            private Color _listBack;
-
-            public Brush HeaderBack { get => _headerBack; set => SetValue(ref _headerBack, value); }
-            private Brush _headerBack;
-
-            public bool Running
-            {
-                get; 
-                set;
-            } = false;
-
-            public string Text
-            {
-                get => _text;
-                set => SetValue(ref _text, value);
-            }
-
-            private string _text;
-
-            public ObservableCollection<FrameViewModel> Frames { get; set; } = new();
-        }
-        private class FrameViewModel : ViewModelBase
-        {
-            public string Method
-            {
-                get => _method;
-                set => SetValue(ref _method, value);
-            }
-            private string _method;
-            public string FilePath
-            {
-                get => _filePath;
-                set => SetValue(ref _filePath, value);
-            }
-            private string _filePath;
-            public int Row
-            {
-                get => _row;
-                set => SetValue(ref _row, value);
-            }
-            private int _row;
-        }
-        private List<DebugViewModel> Debugs { get; } = new();
-        #endregion
+        private List<LogViewModel> Debugs { get; } = new();
 
         class Roller
         {
-            public List<DebugViewModel> Debugs { get; set; }
+            public List<LogViewModel> Debugs { get; set; }
             public UniformSpacingPanel DebugList { get; set; }
             public ScrollViewer Scroll { get; set; }
             public int RowMax { get; set; } = 0;
@@ -181,10 +211,9 @@ namespace WpfLib.Views
                 new Task(() =>
                 {
                     Thread.Sleep(500);
-                    var tmp = Debugs[count].HeaderBack;
                     Debugs[count].HeaderBack = Brushes.LightYellow;
                     Thread.Sleep(1500);
-                    Debugs[count].HeaderBack = tmp;
+                    Debugs[count].HeaderBack = Debugs[count].HeaderBackDefault;
                 }).Start();
             }
             private CancellationTokenSource Cancel { get; set; } = new();
@@ -324,7 +353,7 @@ namespace WpfLib.Views
         {
             Dispatcher.Invoke(() =>
             {
-                var vm = new DebugViewModel
+                var vm = new LogViewModel
                 {
                     Text = Count++ + ". " + message,
                     HeaderFore = FindHeaderFore(type),
@@ -335,7 +364,7 @@ namespace WpfLib.Views
                 var i = 1;
                 frames.ForEach(x =>
                 {
-                    vm.Frames.Add(new FrameViewModel()
+                    vm.Frames.Add(new StackViewModel()
                     {
                         Method = i++ + ". " + x.GetMethod().ToString(),
                         FilePath = x.GetFileName(),
