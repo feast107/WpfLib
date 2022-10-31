@@ -170,6 +170,7 @@
     <Compile Include="Helpers\IHaveUi.cs" />
     <Compile Include="Helpers\IInputCatcher.cs" />
     <Compile Include="Helpers\ILogger.cs" />
+    <Compile Include="Helpers\Implement\LoggerBase.cs" />
     <Compile Include="Helpers\InterLayer.cs" />
     <Compile Include="Helpers\Implement\InputCatcher.cs" />
     <Compile Include="Helpers\PdfGenerator.cs" />
