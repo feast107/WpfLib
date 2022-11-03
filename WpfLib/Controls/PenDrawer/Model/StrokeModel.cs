@@ -2,31 +2,32 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Xml;
 using WpfLib.Controls.PenDrawer.Definition;
 
 namespace WpfLib.Controls.PenDrawer.Model
 {
     public class StrokeModel : ICloneable<StrokeModel>
     {
-        public StrokeModel() { }
+        public StrokeModel()
+        {
+        }
+
         /// <summary>
         /// Svg path
         /// </summary>
         [JsonProperty("p")]
         public virtual string Path { get; set; }
-        [JsonProperty("c")]
-        public virtual StrokeColor Color { get; set; }
-        [JsonProperty("t")]
-        public virtual StrokeThickness Thickness { get; set; }
-        [JsonProperty("s")]
-        public virtual long Timestamp { get; set; }
 
-        [JsonProperty("x1")]
-        public virtual int X1 { get; set; }
-        [JsonProperty("y1")]
-        public virtual int Y1 { get; set; }
+        [JsonProperty("c")] public virtual StrokeColor Color { get; set; }
+        [JsonProperty("t")] public virtual StrokeThickness Thickness { get; set; }
+        [JsonProperty("s")] public virtual long Timestamp { get; set; }
+        [JsonProperty("x1")] public virtual int X1 { get; set; }
+        [JsonProperty("y1")] public virtual int Y1 { get; set; }
 
         private static readonly PropertyInfo[] Props = typeof(StrokeModel).GetProperties();
+
+        [JsonIgnore] public List<PointModel> Points { get; set; }
 
         public StrokeModel From(StrokeModel from)
         {
@@ -35,9 +36,11 @@ namespace WpfLib.Controls.PenDrawer.Model
                 if (t.CanWrite && t.CanRead)
                     t.SetValue(this, t.GetValue(from, null), null);
             }
+
             return this;
         }
     }
+
     public static class StrokeExtension
     {
         public static List<PointModel> StrokeToPoints(this StrokeModel stroke)
@@ -152,6 +155,16 @@ namespace WpfLib.Controls.PenDrawer.Model
                 }
             }
             return ret;
+        }
+
+        public static string ToHtmlSvg(this StrokeModel stroke)
+        {
+            XmlDocument doc = new ();
+            XmlElement element = doc.CreateElement("path");
+            element.SetAttribute("stroke", "#000000");
+            element.SetAttribute("stroke-width", "10");
+            element.SetAttribute("d", stroke.Path);
+            return element.OuterXml;
         }
     }
 }

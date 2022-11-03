@@ -14,6 +14,7 @@ using HandyControl.Controls;
 using HandyControl.Data;
 using WpfLib.Helpers;
 using WpfLib.Views.ViewModel;
+using static System.Net.Mime.MediaTypeNames;
 using ScrollViewer = HandyControl.Controls.ScrollViewer;
 using TextBox = System.Windows.Controls.TextBox;
 using Window = System.Windows.Window;
@@ -34,6 +35,8 @@ namespace WpfLib.Views.ViewModel
 
     public class LogViewModel : ViewModelBase
     {
+        public int Count { get; set; }
+
         public Brush HeaderFore
         {
             get => _headerFore;
@@ -62,17 +65,14 @@ namespace WpfLib.Views.ViewModel
 
         private Brush _headerBack;
         public Brush HeaderBackDefault { get; private set; }
-
+      
 
         public bool Running { get; set; } = false;
 
-        public string Text
-        {
-            get => _text;
-            set => SetValue(ref _text, value);
-        }
+        public string Text => Count + ". " + Content;
 
-        private string _text;
+
+        public string Content { get; set; }
 
         public ObservableCollection<StackViewModel> Frames { get; } = new();
     }
@@ -355,7 +355,8 @@ namespace WpfLib.Views
             {
                 var vm = new LogViewModel
                 {
-                    Text = Count++ + ". " + message,
+                    Count = Count ++,
+                    Content = message.ToString(),
                     HeaderFore = FindHeaderFore(type),
                     ListBack = FindListBack(type),
                     HeaderBack = FindHeaderBack(type)
@@ -466,6 +467,19 @@ namespace WpfLib.Views
                     ((RunningBlock)sender).IsRunning = false;
                 });
             }).Start();
+        }
+
+        private void Content_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                Clipboard.SetText(((LogViewModel)((Expander)sender).DataContext).Content);
+                Growl.InfoGlobal(new GrowlInfo() { ShowDateTime = false, Message = "复制成功" });
+            }
+            catch
+            {
+                Growl.ErrorGlobal(new GrowlInfo() { ShowDateTime = false, Message = "复制失败" });
+            }
         }
     }
     public static class StackExtension

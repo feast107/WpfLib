@@ -9,7 +9,12 @@
         Title="Visual" Height="600" Width="400" Name="Window">
     <Window.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary  Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
+                <ResourceDictionary  Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             <Expander x:Key="Content" x:Shared="False" 
+                      MouseDoubleClick="Content_OnMouseDoubleClick"
                       d:DataContext="{d:DesignInstance viewmodel:LogViewModel,IsDesignTimeCreatable=True}"
                       Background="{Binding HeaderBack}"
                       Foreground="{Binding HeaderFore}"

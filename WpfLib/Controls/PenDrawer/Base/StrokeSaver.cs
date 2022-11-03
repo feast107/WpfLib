@@ -14,24 +14,24 @@ namespace WpfLib.Controls.PenDrawer.Base
         public int StrokeCount =>  Strokes.Count;
         private readonly List<StrokeModel> _strokes = new ();
         private readonly List<PointModel> _points = new ();
+
         public void PenMove(Point point)
         {
-           _points.Add(new PointModel()
-           {
-               X = (int) (point.X * 1.4),
-               Y = (int) (point.Y * 1.242)
-           });
+            _points.Add(new PointModel()
+            {
+                X = (int)(point.X * 1.414),
+                Y = (int)(point.Y * 1.414)
+            });
         }
         public void PenUp(StrokeModel incomplete)
         {
-            if (_points.Count > 0)
-            {
-                incomplete.Path = _points.PointsToStroke();
-                incomplete.X1 = _points[0].X;
-                incomplete.Y1 = _points[0].Y;
-                _strokes.Add(incomplete);
-                _points.Clear();
-            }
+            if (_points.Count <= 0) return;
+            incomplete.Points = _points;
+            incomplete.Path = _points.PointsToStroke();
+            incomplete.X1 = _points[0].X;
+            incomplete.Y1 = _points[0].Y;
+            _strokes.Add(incomplete);
+            _points.Clear();
         }
         public void Remove(int index)
         {

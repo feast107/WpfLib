@@ -7,12 +7,10 @@ namespace WpfLib.Helpers
 {
     public static class TimeExtension
     {
+        private static readonly DateTime Init = new(1970, 1, 1, 0, 0, 0, 0);
         public static long TimeStamp(this DateTime time)
         {
-            DateTime dd = new (1970, 1, 1, 0, 0, 0, 0);
-            DateTime timeUtc = DateTime.SpecifyKind(time, DateTimeKind.Utc);
-            TimeSpan ts = (timeUtc - dd);
-            return (long)ts.TotalMilliseconds;
+            return (long)(DateTime.SpecifyKind(time, DateTimeKind.Local) - Init).TotalMilliseconds;
         }
     }
 }
