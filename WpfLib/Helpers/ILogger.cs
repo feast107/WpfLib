@@ -8,5 +8,6 @@
         void Warn(object message);
         void Error(object message);
         void Fatal(object message);
+
     }
 }
