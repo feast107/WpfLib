@@ -1,0 +1,47 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:cvt="clr-namespace:WpfLib.Converters"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <cvt:Boolean2VisibilityReConverter x:Key="Boolean2VisibilityReConverter"/>
+    <cvt:Boolean2BooleanReConverter x:Key="Boolean2BooleanReConverter"/>
+    <cvt:BooleanArr2BooleanConverter x:Key="BooleanArr2BooleanConverter"/>
+    <cvt:Boolean2StringConverter x:Key="Boolean2StringConverter" />
+    <cvt:BooleanArr2VisibilityConverter x:Key="BooleanArr2VisibilityConverter"/>
+
+    <cvt:BorderCircularClipConverter x:Key="BorderCircularClipConverter"/>
+    <cvt:BorderCircularConverter x:Key="BorderCircularConverter"/>
+    <cvt:BorderClipConverter x:Key="BorderClipConverter"/>
+
+    <cvt:BrushToColorConverter x:Key="BrushToColorConverter" />
+
+    <cvt:Color2ChannelAConverter x:Key="Color2ChannelAConverter"/>
+    <cvt:Color2HexStringConverter x:Key="Color2HexStringConverter"/>
+
+    <cvt:CornerRadiusSplitConverter x:Key="CornerRadiusSplitConverter"/>
+
+    <cvt:DataGridSelectAllButtonVisibilityConverter x:Key="DataGridSelectAllButtonVisibilityConverter"/>
+    <cvt:Double2GridLengthConverter x:Key="Double2GridLengthConverter"/>
+    <cvt:DoubleMinConverter x:Key="DoubleMinConverter"/>
+
+    <cvt:Enum2BooleanConverter x:Key="Enum2BooleanConverter"/>
+
+    <cvt:FallbackBrushConverter x:Key="FallbackBrushConverter"/>
+    <cvt:FilePathConverter x:Key="FilePathConverter"/>
+    <cvt:FolderExists2ColorConverter x:Key="FolderExists2ColorConverter"/>
+
+    <cvt:Int2StringConverter x:Key="Int2StringConverter"/>
+    <cvt:Long2FileSizeConverter x:Key="Long2FileSizeConverter"/>
+    <cvt:Number2PercentageConverter x:Key="Number2PercentageConverter"/>
+    <cvt:Object2BooleanConverter x:Key="Object2BooleanConverter"/>
+    <cvt:Object2StringConverter x:Key="Object2StringConverter"/>
+
+    <cvt:ProgressThicknessConverter x:Key="ProgressThicknessConverter"/>
+    <cvt:RectangleCircularConverter x:Key="RectangleCircularConverter"/>
+    <cvt:String2VisibilityConverter x:Key="String2VisibilityConverter"/>
+    <cvt:String2VisibilityReConverter x:Key="String2VisibilityReConverter"/>
+
+    <cvt:TextToAsteriskConverter x:Key="TextToAsteriskConverter"/>
+    <cvt:ThicknessSplitConverter x:Key="ThicknessSplitConverter"/>
+    <cvt:ToggleButtonToolTipConverter x:Key="ToggleButtonToolTipConverter"/>
+    <cvt:TreeViewItemMarginConverter x:Key="TreeViewItemMarginConverter"/>
+</ResourceDictionary>

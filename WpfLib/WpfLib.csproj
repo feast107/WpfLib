@@ -106,6 +106,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Converters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Font.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -132,6 +136,17 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\Boolean2BooleanReConverter.cs" />
+    <Compile Include="Converters\Boolean2StrConverter.cs" />
+    <Compile Include="Converters\Boolean2VisibilityReConverter.cs" />
+    <Compile Include="Converters\BooleanArr2BooleanConverter.cs" />
+    <Compile Include="Converters\BooleanArr2VisibilityConverter.cs" />
+    <Compile Include="Converters\BorderCircularClipConverter.cs" />
+    <Compile Include="Converters\BorderCircularConverter.cs" />
+    <Compile Include="Converters\BorderClipConverter.cs" />
+    <Compile Include="Converters\BrushToColorConverter.cs" />
+    <Compile Include="Converters\Color2ChannelAConverter.cs" />
+    <Compile Include="Converters\Color2HexStrConverter.cs" />
     <Compile Include="Controls\InvisibleTab.xaml.cs">
       <DependentUpon>InvisibleTab.xaml</DependentUpon>
     </Compile>
@@ -157,6 +172,10 @@
     <Compile Include="Controls\WaveBall.xaml.cs">
       <DependentUpon>WaveBall.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\CornerRadiusSplitConverter.cs" />
+    <Compile Include="Converters\DataGridSelectAllButtonVisibilityConverter.cs" />
+    <Compile Include="Converters\Double2GridLengthConverter.cs" />
+    <Compile Include="Converters\DoubleMinConverter.cs" />
     <Compile Include="Effects\Hover.cs" />
     <Compile Include="Controls\Mask.xaml.cs">
       <DependentUpon>Mask.xaml</DependentUpon>
@@ -165,6 +184,11 @@
       <DependentUpon>MultiScalablePanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Entrance\Factory.cs" />
+    <Compile Include="Converters\Enum2BooleanConverter.cs" />
+    <Compile Include="Converters\EprTick2TimeSpanConverter.cs" />
+    <Compile Include="Converters\FallbackBrushConverter.cs" />
+    <Compile Include="Converters\FilePathConverter.cs" />
+    <Compile Include="Converters\FolderExists2ColorConverter.cs" />
     <Compile Include="Helpers\CursorHelper.cs" />
     <Compile Include="Helpers\IHaveBackground.cs" />
     <Compile Include="Helpers\IHaveForeground.cs" />
@@ -176,6 +200,15 @@
     <Compile Include="Helpers\Implement\InputCatcher.cs" />
     <Compile Include="Helpers\PdfGenerator.cs" />
     <Compile Include="Helpers\TimeExtension.cs" />
+    <Compile Include="Converters\Int2StrConverter.cs" />
+    <Compile Include="Converters\Long2FileSizeConverter.cs" />
+    <Compile Include="Converters\Number2PercentageConverter.cs" />
+    <Compile Include="Converters\Object2BooleanConverter.cs" />
+    <Compile Include="Converters\Object2BooleanReConverter.cs" />
+    <Compile Include="Converters\Object2StringConverter.cs" />
+    <Compile Include="Converters\Object2VisibilityConverter.cs" />
+    <Compile Include="Converters\Object2VisibilityReConverter.cs" />
+    <Compile Include="Converters\ProgressThicknessConverter.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -190,6 +223,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Converters\RectangleCircularConverter.cs" />
+    <Compile Include="Converters\String2VisibilityConverter.cs" />
+    <Compile Include="Converters\String2VisibilityReConverter.cs" />
+    <Compile Include="Converters\TextToAsteriskConverter.cs" />
+    <Compile Include="Converters\ThicknessSplitConverter.cs" />
+    <Compile Include="Converters\ToggleButtonToolTipConverter.cs" />
+    <Compile Include="Converters\TreeViewItemMarginConverter.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="Views\VisualLogger.xaml.cs">
       <DependentUpon>VisualLogger.xaml</DependentUpon>

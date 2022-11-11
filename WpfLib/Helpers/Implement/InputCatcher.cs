@@ -6,11 +6,6 @@ using System.Windows.Input;
 
 namespace WpfLib.Helpers.Implement
 {
-    interface IInterface
-    {
-        //[Obsolete]
-        //static abstract void Target润time不支持StatAbsMemberInInterfaces([CallerMemberName]string n);
-    }
     internal class InputCatcher : IInputCatcher
     {
         private static readonly Dictionary<MouseButton, Inputs> ButtonMap = new ()
